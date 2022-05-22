@@ -168,13 +168,7 @@ You can find more information on each method below.
 
 Hi! The next tools are optionals. There were created to develop the framework and they are already downloaded. For this reason, could be a good idea to make a look. If the classes are good for you, cool! If you don't like... You can only ignore them or rewrite the code to delete... 😭
 
-<br><br><br>
 
----
-
----
-
-<br><br><br>
 
 ## Some relevant information
 
@@ -187,6 +181,14 @@ localhost/test/slug/test
 ```
 
 With the Routes file (simplified):
+
+<br><br><br>
+
+---
+
+---
+
+<br><br><br>
 
 # Aditional information
 
