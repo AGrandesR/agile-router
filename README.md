@@ -181,6 +181,16 @@ localhost/test/slug/test
 ```
 
 With the Routes file (simplified):
+```json
+{
+    "test/{id}/test":{"...":"..."},
+    "test/slug/test":{"...":"..."},
+    "{id}/{value}/test":{"...":"..."}
+}
+```
+
+Always will be enter to the configuration of the first route in your json file.
+
 
 <br><br><br>
 
@@ -192,15 +202,6 @@ With the Routes file (simplified):
 
 # Aditional information
 
-```json
-{
-    "test/{id}/test":{"...":"..."},
-    "test/slug/test":{"...":"..."},
-    "{id}/{value}/test":{"...":"..."}
-}
-```
-
-Always will be enter to the configuration of the first route in your json file.
 
 <!--
 
