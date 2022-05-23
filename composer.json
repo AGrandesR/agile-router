@@ -1,0 +1,16 @@
+{
+    "name": "agrandesr/agile-router",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Agrandesr\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "A.Grandes.R",
+            "email": "agrandesr@gmail.com"
+        }
+    ]
+}
