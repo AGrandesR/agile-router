@@ -51,8 +51,7 @@ There is a easy example to test!
                         "Obi-wan":"Hello there!",
                         "Grievous": "General Kenobi"
                     }
-                },
-                "showOnlyData":true
+                }
             }
         }
     }
@@ -151,11 +150,13 @@ Below is an example of a request using the available checkers.
     }
 }
 ```
+
 How you can see you can check the body, header and request parameters in a easy way.
 
 At the same time, you can use these values for the response indicated in content for renders of type JSON (it can also be used with renders of type SQL).
 
 ### Render method
+
 The render method or property within the JSON is in charge of performing the final action and whose objective is to print the final result of the API.
 The idea is that the JSON method can be used mainly to prototype your API and that the frontend can start working with the API already deployed in production. Afterwards, you can calmly work replacing the JSON-type renderer with a CLASS-type renderer to make the code you need.
 Also, from JSON and CLASS you have SQL type. This is intended for rapidly prototyping APIs that interface to a database.
@@ -169,7 +170,8 @@ You can find more information on each method below.
 
 Hi! The next tools are optionals. There were created to develop the framework and they are already downloaded. For this reason, could be a good idea to make a look. If the classes are good for you, cool! If you don't like... You can only ignore them or rewrite the code to delete... 😭
 
-
+- [GlobalRequest](.docs/tools/GlobalRequest.md)
+- [GlobalResponse](.docs/tools/GlobalResponse.md)
 
 ## Some relevant information
 
@@ -182,6 +184,7 @@ localhost/test/slug/test
 ```
 
 With the Routes file (simplified):
+
 ```json
 {
     "test/{id}/test":{"...":"..."},
@@ -192,7 +195,6 @@ With the Routes file (simplified):
 
 Always will be enter to the configuration of the first route in your json file.
 
-
 <br><br><br>
 
 ---
@@ -202,7 +204,6 @@ Always will be enter to the configuration of the first route in your json file.
 <br><br><br>
 
 # Aditional information
-
 
 <!--
 
