@@ -58,5 +58,5 @@ Entonces daría:
 }
 ```
 
-===============
+---
 [Return to previous page](../../README.md)
