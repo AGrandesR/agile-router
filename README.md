@@ -51,7 +51,8 @@ There is a easy example to test!
                         "Obi-wan":"Hello there!",
                         "Grievous": "General Kenobi"
                     }
-                }
+                },
+                "showOnlyData":true
             }
         }
     }
