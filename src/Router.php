@@ -35,7 +35,7 @@ class Router {
     protected bool $checkParams = true;
     protected bool $extraFiles = true;
 
-    protected $validMethods=['GET','POST','UPDATE','DELETE'];
+    protected $validMethods=['GET','POST','PUT','PATCH','DELETE','COPY','HEAD','OPTIONS','LINK','UNLINK','PURGE','LOCK','UNLOCK','PROPFIND','VIEW'];
 
     function __construct(string $routePath = 'routes.json', string $constantsPath='routeConstants.json') {
         $this->req_uri=$this->getURI();
