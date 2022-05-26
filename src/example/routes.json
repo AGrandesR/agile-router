@@ -1,0 +1,10 @@
+{
+    "":{
+        "GET":{
+            "render":{
+                "type":"json",
+                "content":"Hello World"
+            }
+        }
+    }
+}

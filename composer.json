@@ -12,5 +12,8 @@
             "name": "A.Grandes.R",
             "email": "agrandesr@gmail.com"
         }
-    ]
+    ],
+    "scripts": {
+        "router":"cp -r vendor/agrandesr/agile-router/example/routes.json ./ && cp -r vendor/agrandesr/agile-router/example/index.php ./"
+    }
 }
