@@ -67,6 +67,13 @@ With this you will have a operative endpoint "hi" with the content:
 }
 ```
 
+Or if you prefer, can use the example in the vendor package with the next commands:
+``` bash
+cp -r vendor/agrandesr/agile-router/src/example/routes.json ./
+cp -r vendor/agrandesr/agile-router/src/example/index.php ./
+php -S localhost:9000
+```
+
 Now you can start to use the router json file following the documentation. We recommend to read quickly all the documentation at least one time before start. Yes, yes, it is boring, but trust me it will be very usefull.
 
 <!--
