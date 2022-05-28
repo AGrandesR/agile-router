@@ -50,7 +50,7 @@ class Request {
     public function getRequiredBody(string $bodyName, bool $dieIfFails=false) : mixed {
         if(!isset($this->requiredBody)) {
             if($dieIfFails) GlobalResponse::addErrorAndShowAndDie("Try to access a required body that doesn't exist in route config: $bodyName");
-            else GlobalResponse::addError("Try to access a required body that doesn't exist in route config: $bodyName");
+            else GlobalResponse::addError("Try to access a required body that doesn't exist in route config: $bodyName"); //This is an error because in theory a required body have to throw an error before in the code
             return null;
         }
         if(in_array($bodyName,array_keys($this->requiredBody))) return $this->requiredBody[$bodyName];
