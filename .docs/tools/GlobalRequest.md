@@ -1,19 +1,6 @@
 # GlobalRequest
-# GlobalResponse
 Esta clase se trata de una interfaz de uso global que contiene los valores de la request. Realmente, no hay nada especial en esta clase que no puedas obtener del uso de PHP vainilla. Además, de que en algunos aspectos tiene sus limitaciones. Pero la iremos mejorando con el tiempo para que sea lo más práctica posible.
 
-###### _init.php_ - Hipotético fichero de arranque
-``` php
-use App\tool;
-use App\send;
-class init() {
-    function run(){
-        $tool=new tool();
-        $tool->check(false);
-        $tool=new send();
-    }
-}
-```
 ###### _routes.json_ - Hipotética clase usada por varios servicios diferentes en nuestro código
 ``` json
 "parser/{pokemon}/{trainner}": {
@@ -41,7 +28,7 @@ use AgrandesR\GlobalRequest;
 class randomFile() {
     function  func(){
         $slug=GlobalRequest::getSlug('pokemon'); //Slug=mewtwo
-        
+
     }
 }
 ```
