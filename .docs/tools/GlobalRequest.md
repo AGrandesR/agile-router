@@ -1,6 +1,7 @@
 # GlobalRequest
 
 
+<!--
 ## BASIC INFO GETTER
 
 <table class="tg">
@@ -39,3 +40,4 @@
   </tr>
 </tbody>
 </table>
+-->
