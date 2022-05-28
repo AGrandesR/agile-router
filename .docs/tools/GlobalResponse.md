@@ -1,6 +1,6 @@
 # GlobalResponse
-Esta clase se trata de una interfaz de uso global para una clase de respuesta. En concreto, es una herramienta para estandarizar la respuesta a lo largo del código de una forma rápida y dinámica. Al mismo tiempo, está planteada para poder responder y añadir errores a la respuesta o devolver solo un conjunto de datos concretos si es necesario. A continuación tienes un ejemplo de uso.
-###### _init.php_ - Hipotético fichero de arranque
+This class is a global usage interface for a response class. Specifically, it is a tool to standardize the response throughout the code in a fast and dynamic way. At the same time, it is designed to be able to respond and add errors to the response or return only a specific set of data if necessary. Below is an example of use.
+###### _init.php_ - Hypothetical startup file
 ``` php
 use App\tool;
 use App\send;
@@ -12,7 +12,7 @@ class init() {
     }
 }
 ```
-###### _tool.php_ - Hipotética clase usada por varios servicios diferentes en nuestro código
+###### _tool.php_ - Hypothetical class used by several different services in our code
 ``` php
 use AgrandesR\GlobalResponse;
 class tool() {
@@ -22,7 +22,7 @@ class tool() {
     }
 }
 ```
-###### _send.php_ - Hipotética clase que realizaría una acción de enviar el contenido al cliente
+###### _send.php_ - Hypothetical class that would perform an action of sending the content to the client
 ``` php
 use AgrandesR\GlobalResponse;
 class send() {
@@ -33,13 +33,13 @@ class send() {
     }
 }
 ```
-El resultado del ciclo anterior sería:
+The result of the previous cycle would be:
 ``` json
 {
     "develop":"execute"
 }
 ```
-Si moficamos el valor booleano del fichero _init.php_ de false a true.
+If we change the boolean value of the _init.php_ file from false to true.
 ``` php
 use App\tool;
 use App\send;
@@ -51,7 +51,7 @@ class init() {
     }
 }
 ```
-Entonces daría:
+So it would give:
 ``` json
 {
     "develop":"execute"

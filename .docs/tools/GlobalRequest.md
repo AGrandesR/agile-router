@@ -1,7 +1,7 @@
 # GlobalRequest
-Esta clase se trata de una interfaz de uso global que contiene los valores de la request. Realmente, no hay nada especial en esta clase que no puedas obtener del uso de PHP vainilla. Además, de que en algunos aspectos tiene sus limitaciones. Pero la iremos mejorando con el tiempo para que sea lo más práctica posible.
+This class is an interface for global use that contains the values ​​of the request. Really, there's nothing special about this class that you can't get from using vanilla PHP. In addition, that in some aspects it has its limitations. But we will improve it over time to make it as practical as possible.
 
-###### _routes.json_ - Hipotética clase usada por varios servicios diferentes en nuestro código
+###### _routes.json_ - Hypothetical class used by several different services in our code
 ``` json
 "parser/{pokemon}/{trainner}": {
     "GET":{
@@ -18,11 +18,11 @@ Esta clase se trata de una interfaz de uso global que contiene los valores de la
     }
 },
 ```
-###### _requestCall_ - Hipotética llamada al servidor
+###### _requestCall_ - Hypothetical server call
 ``` bash
 curl localhost:9000/parser/mewtwo
 ```
-###### _randomFile.php_ - Hipotética función
+###### _randomFile.php_ - Hypothetical function
 ``` php
 use AgrandesR\GlobalRequest;
 class randomFile() {
