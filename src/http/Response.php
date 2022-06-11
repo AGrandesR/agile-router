@@ -1,6 +1,6 @@
 <?php
 
-namespace AgrandesR;
+namespace AgrandesR\http;
 
 use Exception;
 use Error;

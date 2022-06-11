@@ -1,7 +1,7 @@
 <?php
 namespace AgrandesR;
 
-use AgrandesR\Request;
+use AgrandesR\http\Request;
 use AgrandesR\GlobalResponse;
 
 class GlobalRequest {
