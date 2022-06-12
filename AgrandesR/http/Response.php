@@ -12,18 +12,19 @@ class Response {
     private array $dictionary;
     
     //region RESPONSE-BODY properties
-    private bool $status;
-    private int $code=200;
+    private bool $status=true;
+    private int $code;
     private string $msg;
     private /*array*/ $data=[];
     private array $meta=[];
-    private array $systemErrors=[];
+    private array $systemWarnings=[];
     private array $errors=[];
     private array $warnings=[];
+    private array $systemError=[];
     //endregion
 
     //region RESPONSE-HEADER properties
-    private int $headerCode;
+    private int $headerCode=200;
     private array $extraHeaders=[];
     //endregion
 
@@ -41,20 +42,24 @@ class Response {
 
     //region DATA FUNCTIONS
     public function addData($data, string $key='') : void {
-        try {
-            if(empty($key)) $this->data[] = $data;
-            else $this->data[$key] = $data;
-        } catch (Exception | Error $e){
-            GlobalResponse::addError($e->getMessage(). '[Response::addData]');
-        }
+        if(empty($key)) $this->data[] = $data;
+        else $this->data[$key] = $data;
     }
     public function setData($data) : void {
-        try{
-            $this->data = $data;
-        } catch (Exception | Error $e){
-            GlobalResponse::addError($e->getMessage() . '[Response::setData]');
-        }
-        
+        $this->data = $data;
+    }
+    public function setSystemError(int $code, string $description, string $file, int $line) : void {
+        $this->headerCode=500;
+        $this->status=false;
+        $this->systemError=[
+            "code"=>$code,
+            "description"=>$description,
+            "file"=>$file,
+            "line"=>$line
+        ];
+    }
+    public function setCatchedSystemError(mixed $error) : void {
+        $this->setSystemError($error->getCode(),$error->getMessage(),$error->getFile(),$error->getLine());
     }
     //endregion
 
@@ -103,17 +108,19 @@ class Response {
     
     //region RENDER FUNCTIONS
     public function show() : void {
-        $this->code = $this->code ?? ($this->code % 2 == 0 || $this->code==0);
+        //$this->code = $this->code ?? ($this->code % 2 == 0 || $this->code==0);
         
         $response = [
             "success"=> $this->status /*?? ($this->code % 2 == 0 || $this->code==0)*/, //Code errors are odd
-            "code"=>$this->code,
+            //"code"=>$this->code??1,
             //"data"=>empty($this->data) || !isset($this->data)? null : $this->data,
             //"meta"=>empty($this->meta) || !isset($this->meta)? null : $this->meta,
         ];
+        if(isset($this->code)) $response['code']=$this->code;
         if(isset($this->data) && !empty($this->data)) $response['data']=$this->data;
         if(isset($this->meta) && !empty($this->meta)) $response['meta']=$this->meta;
         if(isset($this->msg) && !empty($this->msg)) $response['msg']=$this->msg;
+        if(isset($this->systemError)) $response['systemError']=$this->systemError;
 
         foreach ($this->extraHeaders as $key => $value) {
             header("$key: $value");
@@ -121,7 +128,7 @@ class Response {
         switch ($this->responseType){
             case 'JSON':
                 //region SET HEADERS
-                http_response_code($this->headerCode ?? 200);
+                http_response_code($this->headerCode);
                 header('Content-Type: application/json');
                 //endregion
                 
@@ -131,7 +138,7 @@ class Response {
                 break;
             case 'XML':
                 //region SET HEADERS
-                http_response_code($this->headerCode ?? 200);
+                http_response_code($this->headerCode);
                 header('Content-Type: application/json');
                 //endregion
                 break;

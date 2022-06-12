@@ -24,7 +24,7 @@ class Errors {
                 // case E_USER_NOTICE:
                 // case E_STRICT:
                 default:
-                    GlobalResponse::addSystemError($code, $description, $file, $line);
+                    GlobalResponse::addSystemErrorAndShowAndDie($code, $description, $file, $line);
                     break;
             }
         });

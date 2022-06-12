@@ -41,26 +41,30 @@ class Router {
     protected $validMethods=['GET','POST','PUT','PATCH','DELETE','COPY','HEAD','OPTIONS','LINK','UNLINK','PURGE','LOCK','UNLOCK','PROPFIND','VIEW'];
 
     function __construct(bool $frameworkErrors=true,string $routePath = 'routes.json', string $constantsPath='routeConstants.json') {
-        if($frameworkErrors) Errors::setHandler(); //We rewritte the php warnings to include in the response
-        $this->req_uri=GlobalRequest::getPath();
-        $this->req_sections=explode('/',$this->req_uri);
-        $this->req_method=$_SERVER['REQUEST_METHOD'];
+        try{
+            if($frameworkErrors) Errors::setHandler(); //We rewritte the php warnings to include in the response
+            $this->req_uri=GlobalRequest::getPath();
+            $this->req_sections=explode('/',$this->req_uri);
+            $this->req_method=$_SERVER['REQUEST_METHOD'];
 
-        //region READ the json files
-            //region READ ROUTES json
+            //region READ the json files
+                //region READ ROUTES json
 
+                //endregion
             //endregion
-        //endregion
 
-        $map = json_decode(file_get_contents($routePath),true);
-        //$this->routes = $map['routes']; //OLD
-        $this->routes = $map;
-        $this->constants = isset($map['constants'])?$map['constants']:[];
+            $map = json_decode(file_get_contents($routePath),true);
+            //$this->routes = $map['routes']; //OLD
+            $this->routes = $map;
+            $this->constants = isset($map['constants'])?$map['constants']:[];
+        } catch(Error | Exception $e){
+            GlobalResponse::setCatchedSystemErrorAndShowAndDie($e);
+        }
     }
 
     public function run() : void {
         if($this->extraFiles) Options\Extrafiles::addExtraFiles($this);
-        // try {
+        try {
             $isFound=false;
             //region FIND PATH .- In this step we want to find the actual path and save the data
             foreach($this->routes as $path => $pathData){
@@ -123,12 +127,9 @@ class Router {
             } else {
                 $this->pageNotFound();
             }
-        // } catch(Error | Exception $e){
-        //     print_r($e);
-        //     die;
-        //     trigger_error("error");
-        //     throw $e;
-        // }
+        } catch(Error | Exception $e){
+            GlobalResponse::setCatchedSystemErrorAndShowAndDie($e);
+        }
     }
 
     protected function render() : void {
