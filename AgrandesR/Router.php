@@ -8,6 +8,9 @@ use AgrandesR\GlobalRequest;
 
 //region Extra options tools
 use AgrandesR\Documentation;
+use AgrandesR\tool\Token;
+use AgrandesR\extra\Errors;
+use AgrandesR\extra\Check;
 //endregion
 
 // use AgrandesR\Options\ExtraFiles;
@@ -37,8 +40,9 @@ class Router {
 
     protected $validMethods=['GET','POST','PUT','PATCH','DELETE','COPY','HEAD','OPTIONS','LINK','UNLINK','PURGE','LOCK','UNLOCK','PROPFIND','VIEW'];
 
-    function __construct(string $routePath = 'routes.json', string $constantsPath='routeConstants.json') {
-        $this->req_uri=$this->getURI();
+    function __construct(bool $frameworkErrors=true,string $routePath = 'routes.json', string $constantsPath='routeConstants.json') {
+        if($frameworkErrors) Errors::setHandler(); //We rewritte the php warnings to include in the response
+        $this->req_uri=GlobalRequest::getPath();
         $this->req_sections=explode('/',$this->req_uri);
         $this->req_method=$_SERVER['REQUEST_METHOD'];
 
@@ -56,7 +60,7 @@ class Router {
 
     public function run() : void {
         if($this->extraFiles) Options\Extrafiles::addExtraFiles($this);
-        try {
+        // try {
             $isFound=false;
             //region FIND PATH .- In this step we want to find the actual path and save the data
             foreach($this->routes as $path => $pathData){
@@ -86,14 +90,22 @@ class Router {
             if($isFound){
                 //region 1.-CHECKERS - First step, we validate all the parameters required
                     //We evaluate Parameters
-                    $err=$this->checkParameters($this->route_data['req_parameters'] ?? []);
+                    $err=Check::checkParameters($this->route_data['req_parameters'] ?? []);
                     //We evalute headers and merge of errors
-                    $err=array_merge( $this->checkHeaders($this->route_data['req_headers'] ?? [] ),$err);
+                    $err=array_merge(Check::checkHeaders($this->route_data['req_headers'] ?? [] ),$err);
                     //We evaluate body and merge errors
-                    $err=array_merge( $this->checkBody($this->route_data['req_body'] ?? []),$err);
+                    $err=array_merge(Check::checkBody($this->route_data['req_body'] ?? []),$err);
                     //Error if not checked all
                     if(!empty($err)) $this->errorMessage($err);
+                //endregion
 
+                //region 1.2 - TOKEN CHECK
+                    $tokenErrors=[];
+                    $this->checkToken($this->route_data['req_token']??[],$tokenErrors);
+                    if(!empty($tokenErrors)){
+                        GlobalResponse::addErrorAndDie($tokenErrors,401);
+                    }
+                    if(!empty($tokenErrors)) $this->errorMessage($tokenErrors);
                 //endregion
 
                 //region 2. -MODELS - We load the models that we need to make more checks
@@ -111,10 +123,12 @@ class Router {
             } else {
                 $this->pageNotFound();
             }
-        } catch(Error | Exception $e){
-            echo $e->getMessage();
-            die;
-        }
+        // } catch(Error | Exception $e){
+        //     print_r($e);
+        //     die;
+        //     trigger_error("error");
+        //     throw $e;
+        // }
     }
 
     protected function render() : void {
@@ -228,75 +242,7 @@ class Router {
         GlobalResponse::setErrorsAndShowAndDie($errorData);
     }
 
-    protected function checkParameters(array $requiredParameters=[]) : array {
-        //$requiredParameters = $this->route_data['req_parameters'];
-        if(empty($requiredParameters)) return [];
-        $idx=0;
-        $requiredErrors=[];
-        foreach($requiredParameters as $parameterData){
-            if(is_string($parameterData)) $parameterData=['name'=>$parameterData];
-            if(!isset($parameterData['name'])) $requiredErrors='Need to declare "name" of the parameter to can check: ' . json_encode($parameterData);
-            if(!isset($_GET[$parameterData['name']]))  $requiredErrors[]= 'Forgot required parameter ' . $parameterData['name'];
-            if(isset($parameterData['regex']) && !empty($parameterData['regex']) && preg_match($parameterData['regex'],$_GET[$parameterData['name']])) $requiredErrors[$parameterData['name']]='Value not valid with the regex';
-            //In the router PRO we put into Request method the value with the correct type ;)
-            if(empty($requiredErrors)) GlobalRequest::saveRequiredParamater($parameterData['name']);
-        }
-        return $requiredErrors;
-    }
 
-    protected function checkHeaders(array $requiredHeaders=[]) : array {
-        //$requiredHeaders = $this->route_data['req_headers'];
-        if(empty($requiredHeaders)) return [];
-        $idx=0;
-        $requiredErrors=[];
-        foreach($requiredHeaders as $headerData){
-            if(is_string($headerData)) $headerData=['name'=>$headerData];
-            if(!isset($headerData['name'])) $requiredErrors[]='Need to declare "name" of the header to can check: ' . json_encode($headerData);
-            if(!isset($_SERVER['HTTP_' . strtoupper($headerData['name'])])) $requiredErrors[]='Forgot required header: '.$headerData['name'];
-            if(isset($headerData['regex']) && !empty($headerData['regex']) &&  preg_match($headerData['regex'], $_SERVER['HTTP_' . strtoupper($headerData['name'])])) $requiredErrors[]='Value '.$headerData['name']. ' not valid with the regex';
-            //In the router PRO we put into Request method the value with the correct type ;)
-            if(empty($requiredErrors)) GlobalRequest::saveRequiredHeader($headerData['name']);
-        }
-        return $requiredErrors;
-    }
-    protected function checkBody(array $requiredBody) : array {
-        if(empty($requiredBody)) return [];
-        if(in_array(strtoupper($_SERVER['REQUEST_METHOD']),['GET'])) {
-            return ["You can't use body parameters with a method " . $_SERVER['REQUEST_METHOD']];
-        }
-        $requiredErrors=[];
-        $rawBody = file_get_contents('php://input');
-
-        if(!empty($_POST)){
-            foreach($requiredBody as $bodyData){
-                if(is_string($bodyData)) $bodyData=['name'=>$bodyData];
-                if(!isset($bodyData['name'])) $requiredErrors[]='Need to declare "name" of the body element to can check: ' . json_encode($bodyData);
-                if(!isset($_POST[$bodyData['name']])) $requiredErrors[]='Forgot required body in form: '.$bodyData['name'];
-                if(isset($bodyData['regex']) && !empty($bodyData['regex']) &&  preg_match($bodyData['regex'], $_POST[$bodyData['name']])) $requiredErrors[]='Value '.$bodyData['name']. ' not valid with the regex';
-                //In the router PRO we put into Request method the value with the correct type ;)
-                if(empty($requiredErrors)) GlobalRequest::saveRequiredBody($bodyData['name'],$_POST[$bodyData['name']]);
-            }
-        } else {
-            $rawBody = file_get_contents('php://input');
-        if($this->jsonable($rawBody)) {
-                foreach($requiredBody as $bodyData){
-                    if(is_string($bodyData)) $bodyData=['name'=>$bodyData];
-                    if(!isset($bodyData['name'])) $requiredErrors[]='Need to declare "name" of the body element to can check: ' . json_encode($bodyData);
-                    if(!$this->isSetInArray($bodyData['name'],$rawBody, $value)) $requiredErrors[]='Forgot required body in json: '.$bodyData['name'];
-                    //if(isset($bodyData['regex']) && !empty($bodyData['regex']) &&  preg_match($bodyData['regex'], $_POST[$bodyData['name']])) $requiredErrors[]='Value '.$bodyData['name']. ' not valid with the regex';
-                    //In the router PRO we put into Request method the value with the correct type ;)
-                    if(empty($requiredErrors)) GlobalRequest::saveRequiredBody($bodyData['name'], $value);
-                }
-            }else{
-                foreach($requiredBody as $bodyData){
-                    if(is_string($bodyData)) $bodyData=['name'=>$bodyData];
-                    $requiredErrors[]='Forgot required body: '.$bodyData['name'];
-                }
-            }
-
-        }
-        return $requiredErrors;
-    }
     private function isSetInArray(string $arrayRoute, array $array, &$value=null) : bool {
         $paths = explode('.',$arrayRoute);
         $isSet=true;
@@ -320,18 +266,12 @@ class Router {
         if($paramsSymbolPosition>0){
             $uri=substr( $uri, 0, $paramsSymbolPosition);
         }
+        echo "test". $uri;die;
         return $uri;
     }
 
-    private function checkVariableSlugs(string $segment) : array {
-        $res=[];
-        preg_match_all('/\{\{\w{1,}\}\}/',$segment, $dirtyResult);
-        $res = array_map($this->removeMacroVarsForSlugs,$dirtyResult[0]);
-        return $res;
-    }
-    private function removeMacroVarsForSlugs(string $dirtyMacro) : string {
-        return preg_replace('/(\{\{|\}\})/','',$dirtyMacro);
-    }
+    
+
     private function parseStringRouterValues(string $sentence) : string {
         //region PARAMETERS ?value?
         $sentence = preg_replace_callback(
@@ -430,9 +370,5 @@ class Router {
         echo $line;
     }
 
-    //https://stackoverflow.com/questions/6041741/fastest-way-to-check-if-a-string-is-json-in-php + my touch
-    function jsonable(mixed &$string) : bool {
-        $string=json_decode($string,true);
-        return json_last_error() === JSON_ERROR_NONE;
-     }
+    
 }

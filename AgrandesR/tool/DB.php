@@ -1,6 +1,6 @@
 <?php
 
-namespace AgrandesR;
+namespace AgrandesR\tool;
 
 use AgrandesR\GlobalResponse;
 use Error;
@@ -23,7 +23,7 @@ Example:
 $DB = new DatabaseTool();
 */
 
-class DBtool {
+class DB {
     protected PDO $pdo;
     protected bool $operative;
     public string $lastError;

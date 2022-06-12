@@ -1,5 +1,5 @@
 <?php
-namespace AgrandesR;
+namespace AgrandesR\tool;
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
@@ -8,7 +8,7 @@ use AgrandesR\GlobalResponse;
 use Exception;
 use Error;
 
-class JwtTool {
+class Token {
     static function tokenEncode(array $data, string $flag='', int $expiration=3600) : string {
         try {
             $flag = (empty($flag)) ? 'JWT_SECRET' : 'JWT_'.$flag.'_SECRET';

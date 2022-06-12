@@ -3,11 +3,12 @@
 namespace AgrandesR\Options;
 
 use AgrandesR\Router;
+use AgrandesR\GlobalResponse;
 
 class ExtraFiles {
 
     static function addExtraFiles(Router &$router, string $dirname='routes') {
-        $req_uri=$router->getURI();
+        $req_uri=GlobalResponse::getPath();
         $pathArray = explode('/',$req_uri);
         // print_r($pathArray);die;
         if (Count($pathArray)>1 && $dir = opendir($dirname)) {
