@@ -3,13 +3,12 @@
 namespace AgrandesR\Options;
 
 use AgrandesR\Router;
-use AgrandesR\GlobalResponse;
+use AgrandesR\GlobalRequest;
 
 class ExtraFiles {
 
     static function addExtraFiles(Router &$router, string $dirname='routes') {
-        $req_uri=GlobalResponse::getPath();
-        $pathArray = explode('/',$req_uri);
+        $pathArray = explode('/',GlobalRequest::getPath()??'/');
         // print_r($pathArray);die;
         if (Count($pathArray)>1 && $dir = opendir($dirname)) {
             /* Esta es la forma correcta de iterar sobre el directorio. */

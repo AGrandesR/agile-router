@@ -9,6 +9,7 @@ use AgrandesR\GlobalRequest;
 //region Extra options tools
 use AgrandesR\Documentation;
 use AgrandesR\tool\Token;
+use AgrandesR\tool\Utils;
 use AgrandesR\extra\Errors;
 use AgrandesR\extra\Check;
 //endregion
@@ -43,7 +44,7 @@ class Router {
     function __construct(bool $frameworkErrors=true,string $routePath = 'routes.json', string $constantsPath='routeConstants.json') {
         try{
         if($frameworkErrors) Errors::setHandler(); //We rewritte the php warnings to include in the response
-            $this->req_uri=GlobalRequest::getPath();
+            $this->req_uri=GlobalRequest::getPath()??'/';
             $this->req_sections=explode('/',$this->req_uri);
             $this->req_method=$_SERVER['REQUEST_METHOD'];
             
@@ -94,18 +95,18 @@ class Router {
             if($isFound){
                 //region 1.-CHECKERS - First step, we validate all the parameters required
                     //We evaluate Parameters
-                    $err=Check::checkParameters($this->route_data['req_parameters'] ?? []);
+                    $err=Check::parameters($this->route_data['req_parameters'] ?? []);
                     //We evalute headers and merge of errors
-                    $err=array_merge(Check::checkHeaders($this->route_data['req_headers'] ?? [] ),$err);
+                    $err=array_merge(Check::headers($this->route_data['req_headers'] ?? [] ),$err);
                     //We evaluate body and merge errors
-                    $err=array_merge(Check::checkBody($this->route_data['req_body'] ?? []),$err);
+                    $err=array_merge(Check::body($this->route_data['req_body'] ?? []),$err);
                     //Error if not checked all
                     if(!empty($err)) $this->errorMessage($err);
                 //endregion
 
                 //region 1.2 - TOKEN CHECK
                     $tokenErrors=[];
-                    $this->checkToken($this->route_data['req_token']??[],$tokenErrors);
+                    Check::token($this->route_data['req_token']??[],$tokenErrors);
                     if(!empty($tokenErrors)){
                         GlobalResponse::addErrorAndDie($tokenErrors,401);
                     }
@@ -143,7 +144,7 @@ class Router {
                     //if (is_array($content)) $content=json_encode($content, JSON_PRETTY_PRINT);
                     if(is_array($content)) $content=json_encode($content);
                     $content=$this->parseStringRouterValues($content);
-                    $content=json_decode($content,true);
+                    if(!Utils::jsonable($content)) GlobalResponse::addWarning("You don't add a valid json in render content. Nothing showed.");
                     GlobalResponse::setData($content);
                     isset($this->route_data['render']['showOnlyData']) && $this->route_data['render']['showOnlyData']===true ? GlobalResponse::showDataAndDie() : GlobalResponse::showAndDie();
                     break;

@@ -3,7 +3,7 @@
 namespace AgrandesR\extra;
 
 class Check {
-    static function checkParameters(array $requiredParameters=[]) : array {
+    static function parameters(array $requiredParameters=[]) : array {
         //$requiredParameters = $this->route_data['req_parameters'];
         if(empty($requiredParameters)) return [];
         $idx=0;
@@ -18,7 +18,7 @@ class Check {
         }
         return $requiredErrors;
     }
-    static function checkHeaders(array $requiredHeaders=[]) : array {
+    static function headers(array $requiredHeaders=[]) : array {
         //$requiredHeaders = $this->route_data['req_headers'];
         if(empty($requiredHeaders)) return [];
         $idx=0;
@@ -33,7 +33,7 @@ class Check {
         }
         return $requiredErrors;
     }
-    static function checkBody(array $requiredBody) : array {
+    static function body(array $requiredBody) : array {
         if(empty($requiredBody)) return [];
         if(in_array(strtoupper($_SERVER['REQUEST_METHOD']),['GET'])) {
             return ["You can't use body parameters with a method " . $_SERVER['REQUEST_METHOD']];
@@ -71,7 +71,7 @@ class Check {
         }
         return $requiredErrors;
     }
-    static function checkToken(array $reqTokenConfig) : array {
+    static function token(array $reqTokenConfig) : array {
         if(empty($requiredBody)) return [];
 
         $requiredErrors=[];

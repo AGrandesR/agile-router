@@ -6,7 +6,6 @@ use AgrandesR\GlobalResponse;
 class Errors {
     static function setHandler(){
         set_error_handler(function($code, $description, $file = null, $line = null, $context = null){
-            //echo "sadsda";die;
             switch($code){
                 case E_PARSE:
                 case E_NOTICE:
@@ -18,7 +17,6 @@ class Errors {
                     break;
                 // case E_ERROR:
                 // case E_COMPILE_ERROR:
-                
                 // case E_CORE_WARNING:
                 // case E_CORE_ERROR:
                 // case E_USER_ERROR:

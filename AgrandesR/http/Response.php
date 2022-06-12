@@ -72,7 +72,7 @@ class Response {
 
     //region META FUNCTIONS
     public function addWarning(string $msg) : void {
-        $this->warnings[] = $msg;
+        $this->meta['warnings'][] = $msg;
     }
 
     //You are going to need a dictionary to use this
