@@ -42,17 +42,17 @@ class Router {
 
     function __construct(bool $frameworkErrors=true,string $routePath = 'routes.json', string $constantsPath='routeConstants.json') {
         try{
-            if($frameworkErrors) Errors::setHandler(); //We rewritte the php warnings to include in the response
+        if($frameworkErrors) Errors::setHandler(); //We rewritte the php warnings to include in the response
             $this->req_uri=GlobalRequest::getPath();
             $this->req_sections=explode('/',$this->req_uri);
             $this->req_method=$_SERVER['REQUEST_METHOD'];
-
+            
             //region READ the json files
-                //region READ ROUTES json
-
-                //endregion
+            //region READ ROUTES json
+            
             //endregion
-
+            //endregion
+            
             $map = json_decode(file_get_contents($routePath),true);
             //$this->routes = $map['routes']; //OLD
             $this->routes = $map;
@@ -61,10 +61,10 @@ class Router {
             GlobalResponse::setCatchedSystemErrorAndShowAndDie($e);
         }
     }
-
+    
     public function run() : void {
-        if($this->extraFiles) Options\Extrafiles::addExtraFiles($this);
         try {
+            if($this->extraFiles) Options\Extrafiles::addExtraFiles($this);
             $isFound=false;
             //region FIND PATH .- In this step we want to find the actual path and save the data
             foreach($this->routes as $path => $pathData){
