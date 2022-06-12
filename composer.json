@@ -4,7 +4,7 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "AgrandesR\\": "src/"
+            "AgrandesR\\": "AgrandesR/"
         }
     },
     "authors": [
@@ -14,6 +14,10 @@
         }
     ],
     "scripts": {
-        "router":"cp -r vendor/agrandesr/agile-router/example/routes.json ./ && cp -r vendor/agrandesr/agile-router/example/index.php ./"
+        "router":"cp -r vendor/agrandesr/agile-router/example/routes.json ./ && cp -r vendor/agrandesr/agile-router/example/index.php ./",
+        "serve":[
+            "Composer\\Config::disableProcessTimeout",
+            "php -S localhost:9876"
+        ]
     }
 }
