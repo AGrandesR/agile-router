@@ -17,10 +17,9 @@ class Response {
     private string $msg;
     private /*array*/ $data=[];
     private array $meta=[];
-    private array $systemWarnings=[];
     private array $errors=[];
-    private array $warnings=[];
-    private array $systemError=[];
+    private array $warnings;
+    private array $systemError;
     //endregion
 
     //region RESPONSE-HEADER properties
