@@ -3,3 +3,4 @@ composer.lock
 index.php
 routes.json
 /routes/
+.env
