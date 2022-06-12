@@ -60,6 +60,14 @@ class Response {
     public function setCatchedSystemError(mixed $error) : void {
         $this->setSystemError($error->getCode(),$error->getMessage(),$error->getFile(),$error->getLine());
     }
+    public function addSystemWarning(int $code, string $description, string $file, int $line){
+        $this->meta['systemWarnings']=[
+            "code"=>$code,
+            "description"=>$description,
+            "file"=>$file,
+            "line"=>$line
+        ];
+    }
     //endregion
 
     //region META FUNCTIONS
