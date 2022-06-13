@@ -20,7 +20,8 @@ class GlobalRequest {
         if(method_exists($GLOBALS['X-AGRANDESR-REQUEST'], $name))
             $functionResponse=call_user_func_array([$GLOBALS['X-AGRANDESR-REQUEST'],$name], $arguments);
         else
-            GlobalResponse::addErrorShowAndDie("The function '$name' doesn't exist in Request method : ( ");
+            GlobalResponse::addErrorAndShowAndDie("The function '$name' doesn't exist in Request method : ( ");
+        
         return $functionResponse ?? null;
     }
 }
