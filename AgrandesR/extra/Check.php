@@ -2,6 +2,8 @@
 
 namespace AgrandesR\extra;
 
+use AgrandesR\GlobalRequest;
+
 class Check {
     static function parameters(array $requiredParameters=[]) : array {
         //$requiredParameters = $this->route_data['req_parameters'];
@@ -72,11 +74,11 @@ class Check {
         return $requiredErrors;
     }
     static function token(array $reqTokenConfig) : array {
-        if(empty($requiredBody)) return [];
+        if(empty($reqTokenConfig)) return [];
 
         $requiredErrors=[];
         if(!isset($reqTokenConfig['token']) || empty($reqTokenConfig['token'])) return ['Token parameter not defined in req_token'];
-        $realToken=$this->parseStringRouterValues($reqTokenConfig['token']);
+        $realToken=StringRouter::parseValues($reqTokenConfig['token']);
         $decodedToken=JwtTool::tokenDecode($realToken,$reqTokenConfig['flag']??'');
         if(empty($decodedToken)) return ["The token is not valid"];
         GlobalRequest::setTokenData($decodedToken);

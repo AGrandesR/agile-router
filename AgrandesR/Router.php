@@ -12,6 +12,7 @@ use AgrandesR\tool\Token;
 use AgrandesR\tool\Utils;
 use AgrandesR\extra\Errors;
 use AgrandesR\extra\Check;
+use AgrandesR\extra\StringRouter;
 //endregion
 
 // use AgrandesR\Options\ExtraFiles;
@@ -66,7 +67,7 @@ class Router {
     
     public function run() : void {
         try {
-            if($this->extraFiles) Options\Extrafiles::addExtraFiles($this,$this->fileNameIsPath);
+            if($this->extraFiles) Options\Extrafiles::addExtraFiles($this,'routes',$this->fileNameIsPath);
             $isFound=false;
             //region FIND PATH .- In this step we want to find the actual path and save the data
             foreach($this->routes as $path => $pathData){
@@ -135,7 +136,6 @@ class Router {
     }
 
     protected function render() : void {
-        //print_r($this->route_data);die;
         if(isset($this->route_data['render'])) {
             $type = $this->route_data['render']['type'];
             $content = isset($this->route_data['render']['content'])?$this->route_data['render']['content'] : null;
@@ -144,7 +144,7 @@ class Router {
                     //header('Content-Type: application/json');
                     //if (is_array($content)) $content=json_encode($content, JSON_PRETTY_PRINT);
                     if(is_array($content)) $content=json_encode($content);
-                    $content=$this->parseStringRouterValues($content);
+                    $content=StringRouter::parseValues($content);
                     if(!Utils::jsonable($content)) GlobalResponse::addWarning("You don't add a valid json in render content. Nothing showed.");
                     GlobalResponse::setData($content);
                     isset($this->route_data['render']['showOnlyData']) && $this->route_data['render']['showOnlyData']===true ? GlobalResponse::showDataAndDie() : GlobalResponse::showAndDie();
@@ -160,7 +160,7 @@ class Router {
                     break;
                 case "sql":
                     $DB = new DBtool($content['flag'] ?? '');
-                    $sql = $this->parseStringRouterValues($content['sql']);
+                    $sql = StringRouter::parseValues($content['sql']);
                     if(GlobalResponse::hasErrors()) GlobalResponse::showAndDie();
                     $response=$DB->query($sql);
                     if(!$response) GlobalResponse::showAndDie();
@@ -272,78 +272,6 @@ class Router {
         }
         echo "test". $uri;die;
         return $uri;
-    }
-
-    
-
-    private function parseStringRouterValues(string $sentence) : string {
-        //region PARAMETERS ?value?
-        $sentence = preg_replace_callback(
-            '/\?\w{1,15}\?/',
-            function ($matches) {
-                $value = $_GET[trim($matches[0],'? ')] ?? null;
-                if(!isset($value)) return;
-                if(!GlobalRequest::isRequiredParameter(trim($matches[0],'? '))) GlobalResponse::addWarning("GET parameter '".trim($matches[0],'? ')."' used but not is required. We recomend to make required for this route");
-                return $value;
-            },
-            $sentence
-        );
-        //endregion
-
-        //region HEADERS ^value^
-        $sentence = preg_replace_callback(
-            '/\?\w{1,15}\?/',
-            function ($matches) {
-                $value = $_GET[trim($matches[0],'? ')] ?? null;
-                if(!isset($value)) return;
-                return $value;
-            },
-            $sentence
-        );
-        //endregion
-        $sentence = preg_replace_callback(
-            '/\^\w{1,15}\^/',
-            function ($matches) {
-                $headerName=trim($matches[0],'^ ');
-                $value = $_SERVER['HTTP_'.strtoupper($headerName)] ?? null;
-                if(!isset($value)) return;
-                if(!GlobalRequest::isRequiredHeader($headerName)) GlobalResponse::addWarning("GET header '".$headerName."' used but not is required. We recomend to make required for this route");
-                return $value;
-            },
-            $sentence
-        );
-        //region SLUGS {}
-        $sentence = preg_replace_callback(
-            '/\{\w{1,15}\}/',
-            function ($matches) {
-                $slugName=trim($matches[0],'{} ');
-                $value=GlobalRequest::getSlug($slugName);
-                if(!isset($value)) return;
-                return $value;
-            },
-            $sentence
-        );
-        //endregion
-
-        //region BODY **value.value**
-        $sentence = preg_replace_callback(
-            '/\$(\w|\.){1,30}\$/',
-            function ($matches) {
-                $bodyName=trim($matches[0],'$ ');
-                $value = GlobalRequest::getRequiredBody($bodyName) ?? null;
-                if(!isset($value)) return;
-                if(!GlobalRequest::isRequiredBody($bodyName)) GlobalResponse::addWarning("GET body '".$bodyName."' used but not is required. We recomend to make required for this route");
-                return $value;
-            },
-            $sentence
-        );
-        //endregion
-
-        //region MODEL $model.id$
-
-        //endregion
-
-        return $sentence;
     }
 
     // private function pregReplaceWithRegex(string $sentence, string $regex, string $trim) : string {
