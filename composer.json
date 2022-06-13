@@ -19,5 +19,8 @@
             "Composer\\Config::disableProcessTimeout",
             "php -S localhost:9876"
         ]
+    },
+    "require": {
+        "firebase/php-jwt": "v6.2.0"
     }
 }

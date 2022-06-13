@@ -3,6 +3,8 @@
 namespace AgrandesR\extra;
 
 use AgrandesR\GlobalRequest;
+use AgrandesR\tool\Token;
+use AgrandesR\tool\Utils;
 
 class Check {
     static function parameters(array $requiredParameters=[]) : array {
@@ -58,7 +60,7 @@ class Check {
                 foreach($requiredBody as $bodyData){
                     if(is_string($bodyData)) $bodyData=['name'=>$bodyData];
                     if(!isset($bodyData['name'])) $requiredErrors[]='Need to declare "name" of the body element to can check: ' . json_encode($bodyData);
-                    if(!$this->isSetInArray($bodyData['name'],$rawBody, $value)) $requiredErrors[]='Forgot required body in json: '.$bodyData['name'];
+                    if(!Utils::isArrayRouteSetInArray($bodyData['name'],$rawBody, $value)) $requiredErrors[]='Forgot required body in json: '.$bodyData['name'];
                     //if(isset($bodyData['regex']) && !empty($bodyData['regex']) &&  preg_match($bodyData['regex'], $_POST[$bodyData['name']])) $requiredErrors[]='Value '.$bodyData['name']. ' not valid with the regex';
                     //In the router PRO we put into Request method the value with the correct type ;)
                     if(empty($requiredErrors)) GlobalRequest::saveRequiredBody($bodyData['name'], $value);
@@ -75,13 +77,14 @@ class Check {
     }
     static function token(array $reqTokenConfig) : array {
         if(empty($reqTokenConfig)) return [];
-
+        
         $requiredErrors=[];
         if(!isset($reqTokenConfig['token']) || empty($reqTokenConfig['token'])) return ['Token parameter not defined in req_token'];
         $realToken=StringRouter::parseValues($reqTokenConfig['token']);
-        $decodedToken=JwtTool::tokenDecode($realToken,$reqTokenConfig['flag']??'');
+        $decodedToken=Token::decode($realToken,$reqTokenConfig['flag']??'',false);
         if(empty($decodedToken)) return ["The token is not valid"];
         GlobalRequest::setTokenData($decodedToken);
+        echo "adasd";die;
         return $requiredErrors;
     }
     //region CHECK-SLUGS @NON-USED : (

@@ -112,7 +112,6 @@ class Router {
                     if(!empty($tokenErrors)){
                         GlobalResponse::addErrorAndDie($tokenErrors,401);
                     }
-                    if(!empty($tokenErrors)) $this->errorMessage($tokenErrors);
                 //endregion
 
                 //region 2. -MODELS - We load the models that we need to make more checks
@@ -122,7 +121,6 @@ class Router {
                 //region 3. -CONDITIONS - We check if different conditions 
 
                 //endregion
-
                 //region 4. -RENDER - If all is OK we can render!
                 if(empty($err)) $this->render();
                 else ($this->errorMessage($err));
@@ -136,6 +134,7 @@ class Router {
     }
 
     protected function render() : void {
+        echo "test";die;
         if(isset($this->route_data['render'])) {
             $type = $this->route_data['render']['type'];
             $content = isset($this->route_data['render']['content'])?$this->route_data['render']['content'] : null;
@@ -261,18 +260,6 @@ class Router {
     }
     // E> EXTENSIBLE FUNCTIONS
     ////////////////////////////////////////////////////////
-
-    //@PRIVATE!!!
-    public function getURI() : string {
-        $uri=$_SERVER['REQUEST_URI'];
-        $uri = trim($uri,'/');
-        $paramsSymbolPosition = strpos($uri, '?', 0);
-        if($paramsSymbolPosition>0){
-            $uri=substr( $uri, 0, $paramsSymbolPosition);
-        }
-        echo "test". $uri;die;
-        return $uri;
-    }
 
     // private function pregReplaceWithRegex(string $sentence, string $regex, string $trim) : string {
     //     return preg_replace_callback(

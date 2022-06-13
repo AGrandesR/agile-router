@@ -12,7 +12,7 @@ class Errors {
                 case E_WARNING:
                 case E_USER_WARNING:
                 case E_COMPILE_WARNING: 
-                case E_RECOVERABLE_ERROR:
+                case E_RECOVERABLE_ERROR: 
                     GlobalResponse::addSystemWarning($code, $description, $file, $line);
                     break;
                 // case E_ERROR:
@@ -23,6 +23,7 @@ class Errors {
                 // case E_USER_NOTICE:
                 // case E_STRICT:
                 default:
+                    
                     GlobalResponse::setSystemErrorAndShowAndDie($code, $description, $file, $line);
                     break;
             }

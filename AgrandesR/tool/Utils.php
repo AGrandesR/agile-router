@@ -28,4 +28,17 @@ class Utils {
         $string=json_decode($string,true);
         return json_last_error() === JSON_ERROR_NONE;
     }
+
+    static function isArrayRouteSetInArray(string $arrayRoute, array $array, &$value=null) : bool {
+        $paths = explode('.',$arrayRoute);
+        $isSet=true;
+        foreach($paths as $path){
+            if(isset($array[$path])){
+                $value=$array[$path];
+                array_shift($paths);
+                if(!empty($paths)) return $this->isSetInArray(implode('.',$paths),$array[$path]);
+            }else return false;
+        }
+        return $isSet;
+    }
 }

@@ -47,8 +47,8 @@ class Response {
     public function setData($data) : void {
         $this->data = $data;
     }
-    public function setSystemError(int $code, string $description, string $file, int $line) : void {
-        $this->headerCode=500;
+    public function setSystemError(int $code, string $description, string $file, int $line, int $httpCode=500) : void {
+        $this->headerCode=$httpCode;
         $this->status=false;
         $this->systemError=[
             "code"=>$code,
@@ -57,8 +57,8 @@ class Response {
             "line"=>$line
         ];
     }
-    public function setCatchedSystemError(mixed $error) : void {
-        $this->setSystemError($error->getCode(),$error->getMessage(),$error->getFile(),$error->getLine());
+    public function setCatchedSystemError(mixed $error, int $httpCode=500) : void {
+        $this->setSystemError($error->getCode(),$error->getMessage(),$error->getFile(),$error->getLine(),$httpCode);
     }
     public function addSystemWarning(int $code, string $description, string $file, int $line){
         $this->meta['systemWarnings']=[
