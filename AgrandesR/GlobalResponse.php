@@ -31,7 +31,7 @@ class GlobalResponse {
             $show=true;
         }
         if(strpos($name, 'AndDie')) {
-            print_r($die);
+            //print_r($die);
             $name = str_replace('AndDie','',$name);
             $die=true;
         }

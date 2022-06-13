@@ -67,7 +67,6 @@ class Router {
     public function run() : void {
         try {
             if($this->extraFiles) Options\Extrafiles::addExtraFiles($this,$this->fileNameIsPath);
-            print_r($this->routes);die;
             $isFound=false;
             //region FIND PATH .- In this step we want to find the actual path and save the data
             foreach($this->routes as $path => $pathData){
