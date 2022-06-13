@@ -27,7 +27,7 @@ class Request {
         $this->port=$_SERVER['SERVER_PORT'];
         //$this->domain = strpos($this->host,':') ? preg_replace("patron","",$this->host) : $this->host;
         $this->subject=$this->protocol . $this->host;
-        $this->predicate=$_SERVER['REQUEST_URI'];
+        $this->predicate=trim($_SERVER['REQUEST_URI'],' /');
         $this->path=strpos($this->predicate,'?')==false ? $this->predicate : preg_replace('/\?.{0,}$/','',$this->predicate);
         $this->link=$this->subject . $this->predicate;
         $this->slugs=[];

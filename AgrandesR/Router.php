@@ -38,6 +38,7 @@ class Router {
     //AGR options
     protected bool $checkParams = true;
     protected bool $extraFiles = true;
+    protected bool $fileNameIsPath = true;
 
     protected $validMethods=['GET','POST','PUT','PATCH','DELETE','COPY','HEAD','OPTIONS','LINK','UNLINK','PURGE','LOCK','UNLOCK','PROPFIND','VIEW'];
 
@@ -65,7 +66,8 @@ class Router {
     
     public function run() : void {
         try {
-            if($this->extraFiles) Options\Extrafiles::addExtraFiles($this);
+            if($this->extraFiles) Options\Extrafiles::addExtraFiles($this,$this->fileNameIsPath);
+            print_r($this->routes);die;
             $isFound=false;
             //region FIND PATH .- In this step we want to find the actual path and save the data
             foreach($this->routes as $path => $pathData){
@@ -187,14 +189,14 @@ class Router {
         return true;
     }
 
-    public function addPathRoutes(string $path, array $newRoutes) : bool {
+    public function addPathRoutes(string $path, array $newRoutes, bool $fileNameIsPath=true) : bool {
         $check=Count($this->routes);
 
         foreach($newRoutes as $key=>$value) {
-            
-            $newkey = stripslashes(str_replace('.json','',$path) ."/". $key);
+            if($fileNameIsPath) $newkey = stripslashes(str_replace('.json','',$path) . ($key ? ("/". $key):''));
+            //echo"-$newkey";die;
             // echo $newkey . "\n";
-            $this->routes[$newkey] = $value;
+            $this->routes[$newkey ?? $key] = $value;
             //unset($arr[$oldkey]);
         }
         // die;
@@ -224,9 +226,10 @@ class Router {
         } else return $routerPath==$reqUri;
     }
 
-    public function extraFiles(bool $extra=null) {
-        if(!isset($extra)) return $this->extra;
-        $this->extra=$extra;
+    public function extraFiles(bool $extra=null, bool $fileNameIsPath=true) {
+        if(!isset($extra)) return $this->extraFiles;
+        $this->extraFiles=$extra;
+        $this->fileNameIsPath=$fileNameIsPath;
     }
 
     ////////////////////////////////////////////////////////

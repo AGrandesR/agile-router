@@ -7,17 +7,16 @@ use AgrandesR\GlobalRequest;
 
 class ExtraFiles {
 
-    static function addExtraFiles(Router &$router, string $dirname='routes') {
+    static function addExtraFiles(Router &$router, string $dirname='routes', bool $fileNameIsPath=true) {
         $pathArray = explode('/',GlobalRequest::getPath()??'/');
-        // print_r($pathArray);die;
-        if (Count($pathArray)>1 && $dir = opendir($dirname)) {
+
+        if (Count($pathArray)>0 && $dir = opendir($dirname)) {
             /* Esta es la forma correcta de iterar sobre el directorio. */
             while (false !== ($filename = readdir($dir))) {
-                // echo $filename . "==" . ($pathArray[0] . '.json') . "\n";
+                //echo $filename . "==" . ($pathArray[0] . '.json') . "\n";
                 if(preg_match('/\.json$/',$filename) && $filename==($pathArray[0] . '.json')) {
-                    // echo $filename;
-                    $extraRoutes = json_decode(file_get_contents('routes\\'.$filename),true);
-                    $router->addPathRoutes($filename,$extraRoutes);
+                    $extraRoutes = json_decode(file_get_contents($dirname.'\\'.$filename),true);
+                    $router->addPathRoutes($filename,$extraRoutes,$fileNameIsPath);
                     break;
                 }
             }
