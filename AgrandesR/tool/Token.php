@@ -29,6 +29,9 @@ class Token {
         } catch(SignatureInvalidException $e){
             if($showAllErrorData) GlobalResponse::setCatchedSystemErrorAndShowAndDie($e,401);
             else GlobalResponse::addErrorAndShowAndDie('Token error: '.$e->getMessage(),401);
+        } catch(Exception $e){
+            if($showAllErrorData) GlobalResponse::setCatchedSystemErrorAndShowAndDie($e,401);
+            else GlobalResponse::addErrorAndShowAndDie('Token error: '.$e->getMessage(),401);
         }
         $rawArray = json_decode(json_encode($rawSTD),true);
         $rawArray['status']=true;

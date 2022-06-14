@@ -134,7 +134,6 @@ class Router {
     }
 
     protected function render() : void {
-        echo "test";die;
         if(isset($this->route_data['render'])) {
             $type = $this->route_data['render']['type'];
             $content = isset($this->route_data['render']['content'])?$this->route_data['render']['content'] : null;

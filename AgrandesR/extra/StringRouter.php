@@ -4,12 +4,13 @@ namespace AgrandesR\extra;
 
 use AgrandesR\GlobalRequest;
 use AgrandesR\GlobalResponse;
+use AgrandesR\tool\Utils;
 
 class StringRouter {
     static function parseValues(string $sentence) : string {
         //region PARAMETERS ?value?
         $sentence = preg_replace_callback(
-            '/\?\w{1,15}\?/',
+            '/\?\w{1,}\?/',
             function ($matches) {
                 $value = $_GET[trim($matches[0],'? ')] ?? null;
                 if(!isset($value)) return;
@@ -22,7 +23,7 @@ class StringRouter {
 
         //region HEADERS ^value^
         $sentence = preg_replace_callback(
-            '/\?\w{1,15}\?/',
+            '/\?\w{1,}\?/',
             function ($matches) {
                 $value = $_GET[trim($matches[0],'? ')] ?? null;
                 if(!isset($value)) return;
@@ -32,7 +33,7 @@ class StringRouter {
         );
         //endregion
         $sentence = preg_replace_callback(
-            '/\^\w{1,15}\^/',
+            '/\^\w{1,}\^/',
             function ($matches) {
                 $headerName=trim($matches[0],'^ ');
                 $value = $_SERVER['HTTP_'.strtoupper($headerName)] ?? null;
@@ -44,7 +45,7 @@ class StringRouter {
         );
         //region SLUGS {}
         $sentence = preg_replace_callback(
-            '/\{\w{1,15}\}/',
+            '/\{\w{1,}\}/',
             function ($matches) {
                 $slugName=trim($matches[0],'{} ');
                 $value=GlobalRequest::getSlug($slugName);
@@ -57,12 +58,26 @@ class StringRouter {
 
         //region BODY **value.value**
         $sentence = preg_replace_callback(
-            '/\$(\w|\.){1,30}\$/',
+            '/\$(\w|\.){1,}\$/',
             function ($matches) {
                 $bodyName=trim($matches[0],'$ ');
                 $value = GlobalRequest::getRequiredBody($bodyName) ?? null;
                 if(!isset($value)) return;
                 if(!GlobalRequest::isRequiredBody($bodyName)) GlobalResponse::addWarning("GET body '".$bodyName."' used but not is required. We recomend to make required for this route");
+                return $value;
+            },
+            $sentence
+        );
+        //endregion
+
+        //region HEADERS #value#
+        $sentence = preg_replace_callback(
+            '/\#\w{1,}\#/',
+            function ($matches) {
+                $tokenDataName=trim($matches[0],'# ');
+                $tokenData = GlobalRequest::getTokenData($tokenDataName);
+                if(!Utils::isArrayRouteSetInArray($tokenDataName,$tokenData,$value)) return $value;
+                if(!isset($value)) return;
                 return $value;
             },
             $sentence

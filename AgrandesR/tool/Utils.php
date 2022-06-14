@@ -36,7 +36,7 @@ class Utils {
             if(isset($array[$path])){
                 $value=$array[$path];
                 array_shift($paths);
-                if(!empty($paths)) return $this->isSetInArray(implode('.',$paths),$array[$path]);
+                if(!empty($paths)) return self::isArrayRouteSetInArray(implode('.',$paths),$array[$path]);
             }else return false;
         }
         return $isSet;

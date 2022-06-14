@@ -19,6 +19,7 @@ class Request {
     private bool $ssl;
 
     protected array $slugs;
+    protected array $tokenData;
 
     function __construct() {
         $this->protocol=strtolower(substr($_SERVER["SERVER_PROTOCOL"],0,strpos( $_SERVER["SERVER_PROTOCOL"],'/'))).'://';
@@ -91,6 +92,13 @@ class Request {
     
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     ////S> SETTERS & GETTERS
+    public function setTokenData(array $tokenData) : void{
+        $this->tokenData=$tokenData;
+    }
+    public function getTokenData() : array {
+        return $this->tokenData;
+    }
+    
     public function getHost() : string{
         return $this->host;
     }

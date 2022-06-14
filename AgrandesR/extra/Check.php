@@ -84,7 +84,6 @@ class Check {
         $decodedToken=Token::decode($realToken,$reqTokenConfig['flag']??'',false);
         if(empty($decodedToken)) return ["The token is not valid"];
         GlobalRequest::setTokenData($decodedToken);
-        echo "adasd";die;
         return $requiredErrors;
     }
     //region CHECK-SLUGS @NON-USED : (
