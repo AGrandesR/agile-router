@@ -13,7 +13,7 @@ Follow the next steps to start to working with this php router. If you found any
 
 You will need to have installed php and composer in your computer.
 
-## Instalation 🔧
+## Installation 🔧
 
 You need to require the package to your project.
 
