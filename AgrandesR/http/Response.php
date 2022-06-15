@@ -98,7 +98,7 @@ class Response {
         $this->addError($msg);
     }
 
-    public function setErrors(array $errors, $strict=false) : void {
+    public function addErrors(array $errors, $strict=false) : void {
         if(!$strict && empty($errors)) return;
         $this->status=false;
         $this->meta['errors'] = !isset($this->meta['errors']) ? $errors : array_merge($this->meta['errors'], $errors);

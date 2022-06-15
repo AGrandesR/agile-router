@@ -151,6 +151,11 @@ class Router {
                     echo $content;
                     break;
                 case "class":
+                    $errors=[];
+                    if(!isset($content['path']))        $errors[]="The path is not defined in the router class render.";
+                    if(!isset($content['name']))        $errors[]="The name is not defined in the router class render.";
+                    if(!isset($content['function']))    $errors[]="The function is not defined in the router class render.";
+                    if(!empty($errors)) GlobalResponse::addErrorsAndShowAndDie($errors);
                     $path = $content['path'] . '\\' . $content['name'];
                     $func = $content['function'];
                     $class= new $path();
