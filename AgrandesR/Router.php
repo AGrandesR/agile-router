@@ -170,6 +170,15 @@ class Router {
                     GlobalResponse::setData($response);
                     GlobalResponse::showAndDie();
                     break;
+                case "file":
+                    if(!is_file($content['path'])) GlobalResponse::addErrorAndShowAndDie('We didn\'t find any file',404);
+                    $docContent=file_get_contents($content['path']);
+                    $extension = pathinfo($content['path'], PATHINFO_EXTENSION);
+
+                    $mimeType=Utils::getMimeTypeFromExtension($extension);
+                    header("Content-Type: $mimeType");
+                    echo $docContent;
+                    break;
                 case "doc":
                 case "docs":
                     //We need to create a doc with all the routes and subroutes, etc and send to showDocumentation
