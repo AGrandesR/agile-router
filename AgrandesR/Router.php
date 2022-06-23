@@ -171,9 +171,10 @@ class Router {
                     GlobalResponse::showAndDie();
                     break;
                 case "file":
-                    if(!is_file($content['path'])) GlobalResponse::addErrorAndShowAndDie('We didn\'t find any file',404);
-                    $docContent=file_get_contents($content['path']);
-                    $extension = pathinfo($content['path'], PATHINFO_EXTENSION);
+                    $path = StringRouter::parseValues($content['path']);
+                    if(!is_file($path)) GlobalResponse::addErrorAndShowAndDie('We didn\'t find any file',404);
+                    $docContent=file_get_contents($path);
+                    $extension = pathinfo($path, PATHINFO_EXTENSION);
 
                     $mimeType=Utils::getMimeTypeFromExtension($extension);
                     header("Content-Type: $mimeType");
@@ -223,7 +224,7 @@ class Router {
             $match=false;
             foreach($pathArray as $idx=>$path){
                 if(!isset($uriArray[$idx])) break;
-                if(strpos($path,'{')!==false && strpos($path,'{')!==false) {
+                if(strpos($path,'{')!==false && strpos($path,'}')!==false) {
                     $match=true;
                     GlobalRequest::addSlug(trim($path," {}"),$uriArray[$idx]);
                     continue;
