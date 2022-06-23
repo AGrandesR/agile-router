@@ -180,6 +180,11 @@ class Router {
                     header("Content-Type: $mimeType");
                     echo $docContent;
                     break;
+                case "php":
+                    $path = StringRouter::parseValues($content['path']);
+                    if(!is_file($path)) GlobalResponse::addErrorAndShowAndDie('We didn\'t find any php file',404);
+                    include_once $path;
+                    break;
                 case "doc":
                 case "docs":
                     //We need to create a doc with all the routes and subroutes, etc and send to showDocumentation
