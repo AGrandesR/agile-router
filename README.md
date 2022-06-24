@@ -162,6 +162,14 @@ How you can see you can check the body, header and request parameters in a easy 
 
 At the same time, you can use these values for the response indicated in content for renders of type JSON (it can also be used with renders of type SQL).
 
+
+For specific checker documentation:
+
+- [headers checker](.docs/checkers/headerChecker.md)
+- [params checker](.docs/checkers/paramChecker.md)
+- [body checker](.docs/checkers/bodyChecker.md)
+- [token checker](.docs/checkers/tokenChecker.md)
+
 ### Render method
 
 The render method or property within the JSON is in charge of performing the final action and whose objective is to print the final result of the API.
