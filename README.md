@@ -231,7 +231,7 @@ Please read [CONTRIBUTING.md]() for details of our code of conduct, and the proc
 
 For all available versions, see the [tags in this repository](https://github.com/AGrandesR/AGR/tags).
 
-## Autores ✒️
+## Authors ✒️
 
 * **A.Grandes.R** - *Main worker* - [AGrandesR](https://github.com/AGrandesR)
 
