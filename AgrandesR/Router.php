@@ -57,6 +57,7 @@ class Router {
             //endregion
             
             $map = json_decode(file_get_contents($routePath),true);
+            if(json_last_error()!==JSON_ERROR_NONE) GlobalResponse::addErrorAndShowAndDie("$routePath is not a valid json [".json_last_error_msg().']');
             //$this->routes = $map['routes']; //OLD
             $this->routes = $map;
             $this->constants = isset($map['constants'])?$map['constants']:[];
@@ -189,6 +190,7 @@ class Router {
                 case "docs":
                     //We need to create a doc with all the routes and subroutes, etc and send to showDocumentation
                     $routeMap = json_decode(file_get_contents('routes.json'),true);
+                    if(json_last_error()!==JSON_ERROR_NONE) GlobalResponse::addErrorAndShowAndDie("$routePath is not a valid json [".json_last_error_msg().']');
                     $this->showDocumentation($routeMap);
                     
 
