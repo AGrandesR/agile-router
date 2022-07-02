@@ -5,7 +5,8 @@ use AgrandesR\GlobalResponse;
 
 class Errors {
     static function setHandler(){
-        set_error_handler(function($code, $description, $file = null, $line = null, $context = null){
+        set_error_handler(function($code, $description, $file = null, $line = null, $context = null) {
+            //GlobalResponse::callSystemErrorCallback($code, $description, $file, $line, $context);
             switch($code){
                 case E_PARSE:
                 case E_NOTICE:
@@ -23,7 +24,6 @@ class Errors {
                 // case E_USER_NOTICE:
                 // case E_STRICT:
                 default:
-                    
                     GlobalResponse::setSystemErrorAndShowAndDie($code, $description, $file, $line);
                     break;
             }

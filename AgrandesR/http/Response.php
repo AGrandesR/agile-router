@@ -2,14 +2,18 @@
 
 namespace AgrandesR\http;
 
+use AgrandesR\GlobalResponse;
 use Exception;
 use Error;
+use Closure;
 
 class Response {
     private string $responseType = 'JSON'; //XML or JSON (¿More ideas?) HTML
     private array $allowedTypes = ['JSON','XML'];
     private string $language;
     private array $dictionary;
+
+    private Closure $systemCallback;
     
     //region RESPONSE-BODY properties
     private bool $status=true;
@@ -39,7 +43,7 @@ class Response {
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     ////S> RESPONSE OPERATIVE FUNCTIONS
 
-    //region DATA FUNCTIONS
+    //region DATA methods
     public function addData($data, string $key='') : void {
         if(empty($key)) $this->data[] = $data;
         else $this->data[$key] = $data;
@@ -47,6 +51,20 @@ class Response {
     public function setData($data) : void {
         $this->data = $data;
     }
+    //endregion
+
+    //region Callback for system Errors
+    public function setSystemErrorCallback(Closure $function){
+        $this->systemCallback=$function;
+    }
+
+    public function callSystemErrorCallback() {
+        if(isset($this->systemCallback))
+            call_user_func($this->systemCallback,func_get_args());
+    }
+    //endregion
+
+    //region System Errors methods
     public function setSystemError(int $code, string $description, string $file, int $line, int $httpCode=500) : void {
         $this->headerCode=$httpCode;
         $this->status=false;
@@ -127,7 +145,10 @@ class Response {
         if(isset($this->data) && !empty($this->data)) $response['data']=$this->data;
         if(isset($this->meta) && !empty($this->meta)) $response['meta']=$this->meta;
         if(isset($this->msg) && !empty($this->msg)) $response['msg']=$this->msg;
-        if(isset($this->systemError)) $response['systemError']=$this->systemError;
+        if(isset($this->systemError)) {
+            $response['systemError']=$this->systemError;
+            $this->callSystemErrorCallback($this->systemError);
+        }
 
         foreach ($this->extraHeaders as $key => $value) {
             header("$key: $value");
