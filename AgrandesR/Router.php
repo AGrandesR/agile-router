@@ -10,6 +10,7 @@ use AgrandesR\GlobalRequest;
 use AgrandesR\Documentation;
 use AgrandesR\tool\Token;
 use AgrandesR\tool\Utils;
+use AgrandesR\tool\DB as DBtool;
 use AgrandesR\extra\Errors;
 use AgrandesR\extra\Check;
 use AgrandesR\extra\StringRouter;
@@ -162,7 +163,7 @@ class Router {
                     $class= new $path();
                     $class->$func();
                     break;
-                case "sql":
+                case "sql":                    
                     $DB = new DBtool($content['flag'] ?? '');
                     $sql = StringRouter::parseValues($content['sql']);
                     if(GlobalResponse::hasErrors()) GlobalResponse::showAndDie();
