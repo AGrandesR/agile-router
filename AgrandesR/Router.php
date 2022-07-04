@@ -265,7 +265,7 @@ class Router {
         $doc->render();
     }
     protected function errorMessage(array $errorData) {
-        GlobalResponse::setErrorsAndShowAndDie($errorData);
+        GlobalResponse::addErrorsAndShowAndDie($errorData);
     }
 
 
