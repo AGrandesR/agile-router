@@ -42,15 +42,13 @@ There is a easy example to test!
 
 ```json
 {
-    "routes": {
-        "hi": {
-            "GET": {
-                "render":{
-                    "type":"json",
-                    "content":{
-                        "Obi-wan":"Hello there!",
-                        "Grievous": "General Kenobi"
-                    }
+    "hi": {
+        "GET": {
+            "render":{
+                "type":"json",
+                "content":{
+                    "Obi-wan":"Hello there!",
+                    "Grievous": "General Kenobi"
                 }
             }
         }
