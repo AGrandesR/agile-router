@@ -242,3 +242,4 @@ This project is under the License MIT - read the file [LICENSE.md](LICENSE.md) f
 ## Thanks to: 🎁
 
 * [Villanuevand](https://github.com/Villanuevand) for his incredible [template](https://gist.github.com/Villanuevand/6386899f70346d4580c723232524d35a) for documentation 😊
+* [Alberto Ramirez](https://github.com/albertorc87) for his inspiration in the magic world of PHP.
