@@ -144,8 +144,8 @@ Below is an example of a request using the available checkers.
                     "body":{
                         "id":"$id$",
                         "data": {
-                            "id":"$data.name$",
-                            "id":"$data.surname$"
+                            "name":"$data.name$",
+                            "surname":"$data.surname$"
                         }
                     }
                 },
