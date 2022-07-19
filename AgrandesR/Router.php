@@ -247,8 +247,8 @@ class Router {
         } else return $routerPath==$reqUri;
     }
 
-    public function extraFiles(bool $extra=null, bool $fileNameIsPath=true) {
-        if(!isset($extra)) return $this->extraFiles;
+    public function extraFiles(bool $extra=false, bool $fileNameIsPath=true) {
+        if(!$extra) return $this->extraFiles;
         $this->extraFiles=$extra;
         $this->fileNameIsPath=$fileNameIsPath;
     }
@@ -260,7 +260,14 @@ class Router {
     }
     protected function showDocumentation(array $routeMap) {
         //In that place you can overwritte the standard model of documentation for your own style
-        $doc = new Documentation($routeMap);
+        $documentationMap=[
+            "routes"=>$routeMap,
+            "info"=>[
+                "title"=>"API",
+                "description"=>"documentation"
+            ]
+        ];
+        $doc = new Documentation($documentationMap);
         
         $doc->render();
     }
