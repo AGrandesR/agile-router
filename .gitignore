@@ -1,7 +1,7 @@
 /vendor/
 composer.lock
-index.php
-routes.json
+/index.php
+/routes.json
 /routes/
 .env
 test/
