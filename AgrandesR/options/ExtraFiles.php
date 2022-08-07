@@ -11,7 +11,7 @@ class ExtraFiles {
     static function addExtraFiles(Router &$router, string $dirname='routes', bool $fileNameIsPath=true) {
         $pathArray = explode('/',GlobalRequest::getPath()??'/');
 
-        if ($dir = opendir($dirname)) {
+        if (is_dir($dirname) && $dir = opendir($dirname)) {
             /* Esta es la forma correcta de iterar sobre el directorio. */
             while (false !== ($filename = readdir($dir))) {
                 //echo $filename . "==" . ($pathArray[0] . '.json') . "\n";
