@@ -1,6 +1,6 @@
 <?php
 
-namespace AgrandesR\Options;
+namespace AgrandesR\options;
 
 use AgrandesR\Router;
 use AgrandesR\GlobalRequest;
