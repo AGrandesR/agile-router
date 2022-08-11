@@ -4,7 +4,8 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "AgrandesR\\": "AgrandesR/"
+            "AgrandesR\\": "AgrandesR/",
+            "Tests\\":"Tests"
         }
     },
     "authors": [
@@ -18,9 +19,13 @@
         "serve":[
             "Composer\\Config::disableProcessTimeout",
             "php -S localhost:9876"
-        ]
+        ],
+        "tests":"./vendor/bin/phpunit --testdox Tests"
     },
     "require": {
         "firebase/php-jwt": "v6.2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
     }
 }
