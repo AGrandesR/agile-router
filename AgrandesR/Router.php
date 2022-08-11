@@ -46,7 +46,7 @@ class Router {
 
     function __construct(bool $frameworkErrors=true,string $routePath = 'routes.json', string $constantsPath='routeConstants.json') {
         try{
-        if($frameworkErrors) Errors::setHandler(); //We rewritte the php warnings to include in the response
+            if($frameworkErrors) Errors::setHandler(); //We rewritte the php warnings to include in the response
             $this->req_uri=GlobalRequest::getPath()??'/';
             $this->req_sections=explode('/',$this->req_uri);
             $this->req_method=$_SERVER['REQUEST_METHOD'];
@@ -66,7 +66,7 @@ class Router {
             GlobalResponse::setCatchedSystemErrorAndShowAndDie($e);
         }
     }
-    
+
     public function run() : void {
         try {
             if($this->extraFiles) Options\Extrafiles::addExtraFiles($this,'routes',$this->fileNameIsPath);
