@@ -4,6 +4,7 @@ namespace AgrandesR\tool;
 
 use SimpleXMLElement;
 use AgrandesR\tool\MimeTypes;
+use Exception;
 
 class Utils {
     //@CREDIT: https://stackoverflow.com/questions/26964136/how-do-i-convert-json-to-xml
@@ -22,6 +23,44 @@ class Utils {
         }
     
         return $xml->asXML();
+    }
+
+    /**
+     * @credit https://www.php.net/manual/en/class.simplexmlelement.php
+     * @param SimpleXMLElement $xml
+     * @return array
+    **/
+    function xmlToArray(SimpleXMLElement $xml): array {
+        $parser = function (SimpleXMLElement $xml, array $collection = []) use (&$parser) {
+            $nodes = $xml->children();
+            $attributes = $xml->attributes();
+
+            if (0 !== count($attributes)) {
+                foreach ($attributes as $attrName => $attrValue) {
+                    $collection['attributes'][$attrName] = strval($attrValue);
+                }
+            }
+
+            if (0 === $nodes->count()) {
+                $collection['value'] = strval($xml);
+                return $collection;
+            }
+
+            foreach ($nodes as $nodeName => $nodeValue) {
+                if (count($nodeValue->xpath('../' . $nodeName)) < 2) {
+                    $collection[$nodeName] = $parser($nodeValue);
+                    continue;
+                }
+
+                $collection[$nodeName][] = $parser($nodeValue);
+            }
+
+            return $collection;
+        };
+
+        return [
+            $xml->getName() => $parser($xml)
+        ];
     }
 
     //@CREDIT: https://stackoverflow.com/questions/6041741/fastest-way-to-check-if-a-string-is-json-in-php + my touch
