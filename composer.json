@@ -24,9 +24,9 @@
         "tests":"./vendor/bin/phpunit --testdox tests"
     },
     "require": {
-        "firebase/php-jwt": "*"
+        "firebase/php-jwt": "^v6.2.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "*"
+        "phpunit/phpunit": "^9.5"
     }
 }
