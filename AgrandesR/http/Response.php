@@ -3,13 +3,14 @@
 namespace AgrandesR\http;
 
 use AgrandesR\GlobalResponse;
+use AgrandesR\tool\Utils;
 use Exception;
 use Error;
 use Closure;
 
 class Response {
-    private string $responseType = 'JSON'; //XML or JSON (¿More ideas?) HTML
-    private array $allowedTypes = ['JSON','XML'];
+    private string $type = 'JSON'; //XML or JSON (¿More ideas?) HTML
+    private array $allowedTypes = ['JSON','XML','TXT','HTML'];
     private string $language;
     private array $dictionary;
 
@@ -132,9 +133,9 @@ class Response {
     //endregion
     
     //region RENDER FUNCTIONS
-    public function show() : void {
+    public function show($all=true) : void { //show(false)==showData()
         //$this->code = $this->code ?? ($this->code % 2 == 0 || $this->code==0);
-        
+
         $response = [
             "success"=> $this->status /*?? ($this->code % 2 == 0 || $this->code==0)*/, //Code errors are odd
             //"code"=>$this->code??1,
@@ -153,7 +154,7 @@ class Response {
         foreach ($this->extraHeaders as $key => $value) {
             header("$key: $value");
         }
-        switch ($this->responseType){
+        switch ($this->type){
             case 'JSON':
                 //region SET HEADERS
                 http_response_code($this->headerCode);
@@ -162,33 +163,23 @@ class Response {
                 
                 //region PRINT BODY
                 //endregion
-                echo json_encode($response);
+                echo json_encode($all ? $response : $this->data);
                 break;
             case 'XML':
                 //region SET HEADERS
                 http_response_code($this->headerCode);
                 header('Content-Type: application/json');
+                echo Utils::arrayToXML($all ? $response : $this->data, $all?'<document/>':'<data/>');
                 //endregion
                 break;
         }
     }
     
     public function showData() : void {
-        switch ($this->responseType){
-            case 'JSON':
-                //region SET HEADERS
-                http_response_code($this->headerCode ?? 200);
-                header('Content-Type: application/json');
-                foreach ($this->extraHeaders as $key => $value) {
-                    header("$key: $value");
-                }
-                //endregion
-                
-                //region PRINT BODY
-                //endregion
-                echo json_encode($this->data);
-                break;
-        }
+        $this->show(false);
+    }
+    private function print(bool $all=true) { //$all include meta-data
+
     }
     //endregion
 
@@ -197,13 +188,24 @@ class Response {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     ////S> SETTERS & GETTERS
-    public function setResponseType(string $type) : bool {
+    public function setType(string $type) : bool {
         if(in_array(strtoupper($type),$this->allowedTypes)){
-            $this->responseType=strtoupper($type);
+            $this->type=strtoupper($type);
             return true;
         }
         $this->addWarning("Try to set a $type response, but this response type is not allowed");
         return false;
+    }
+    public function setRenderType(string $type) : bool {
+        if(in_array(strtoupper($type),$this->allowedTypes)){
+            $this->type=strtoupper($type);
+            return true;
+        }
+        $this->addWarning("Try to set a $type response, but this response type is not allowed");
+        return false;
+    }
+    public function getType() : string {
+        return $this->type;
     }
     
     public function setStatus(bool $status) : void {
@@ -253,7 +255,7 @@ class DictionaryResponse {
         if(isset($meta_data)) $response_template['meta']=$meta_data;
 
         echo json_encode($response_template);
-        die;
+        exit;
 
 
         echo json_encode([
