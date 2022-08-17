@@ -66,14 +66,9 @@ There are different functions to use static in GlobalResponse.
 ### getType()
 This return the type that have now GlobalResponse to return the data. By default, JSON. The return type is always in uppercase and have to be in the list of allowed types. Actual availables: _JSON, TXT_.
 
-**Parameters:**
-
-- $type['string|required']: This is the name of the type that we can use in GlobalResponse. Actual availables: _JSON, TXT_.
-
-
 **Return:**
 
-- $ret['bool']:
+- $ret['string']: This is the name of the type that we are using in the GlobalResponse. Actual availables: _JSON, TXT_.
 ### setType()
 This can change the type of response, that is by default in JSON.
 
