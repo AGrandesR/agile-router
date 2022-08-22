@@ -45,94 +45,87 @@ class Router {
     protected $validMethods=['GET','POST','PUT','PATCH','DELETE','COPY','HEAD','OPTIONS','LINK','UNLINK','PURGE','LOCK','UNLOCK','PROPFIND','VIEW'];
 
     function __construct(bool $frameworkErrors=true,string $routePath = 'routes.json', string $constantsPath='routeConstants.json') {
-        try{
-            if($frameworkErrors) Errors::setHandler(); //We rewritte the php warnings to include in the response
-            $this->req_uri=GlobalRequest::getPath()??'/';
-            $this->req_sections=explode('/',$this->req_uri);
-            $this->req_method=$_SERVER['REQUEST_METHOD'];
-            
-            //region READ the json files
-            //region READ ROUTES json
-            
-            //endregion
-            //endregion
-            
-            $map = json_decode(file_get_contents($routePath),true);
-            if(json_last_error()!==JSON_ERROR_NONE) GlobalResponse::addErrorAndShowAndDie("$routePath is not a valid json [".json_last_error_msg().']');
-            //$this->routes = $map['routes']; //OLD
-            $this->routes = $map;
-            $this->constants = isset($map['constants'])?$map['constants']:[];
-        } catch(Error | Exception $e){
-            GlobalResponse::setCatchedSystemErrorAndShowAndDie($e);
-        }
+        if($frameworkErrors) Errors::setHandler(); //We rewritte the php warnings to include in the response
+        $this->req_uri=GlobalRequest::getPath()??'/';
+        $this->req_sections=explode('/',$this->req_uri);
+        $this->req_method=$_SERVER['REQUEST_METHOD'];
+        
+        //region READ the json files
+        //region READ ROUTES json
+        
+        //endregion
+        //endregion
+        
+        $map = json_decode(file_get_contents($routePath),true);
+        if(json_last_error()!==JSON_ERROR_NONE) GlobalResponse::addErrorAndShowAndDie("$routePath is not a valid json [".json_last_error_msg().']');
+        //$this->routes = $map['routes']; //OLD
+        $this->routes = $map;
+        $this->constants = isset($map['constants'])?$map['constants']:[];
     }
 
     public function run() : void {
-        try {
-            if($this->extraFiles) Options\Extrafiles::addExtraFiles($this,'routes',$this->fileNameIsPath);
-            $isFound=false;
-            //region FIND PATH .- In this step we want to find the actual path and save the data
-            foreach($this->routes as $path => $pathData){
-                if($this->isPathEqualToRouterPath($this->req_uri,$path)){
-                    $this->route_path=$path;
-                    
-                    $this->route_req_parameters=$pathData['ext']['req_parameters'] ?? [];
-                    $this->route_opt_parameters=$pathData['ext']['opt_parameters'] ?? [];
-    
-                    foreach ($pathData as $method => $methodData) {
-                        if($method==$this->req_method && in_array($method,$this->validMethods)){
-                            if(isset($methodData['parameters'])){
-                                $this->route_req_parameters=array_merge($this->route_req_parameters, $methodData['req_parameters']);
-                                $this->route_opt_parameters=array_merge($this->route_req_parameters, $methodData['opt_parameters']);
-                            }
-                            $isFound=true;
-                            $this->route_data=$methodData;
-                            break 2;
-                        } else {
-                            
+        if($this->extraFiles) Options\Extrafiles::addExtraFiles($this,'routes',$this->fileNameIsPath);
+        $isFound=false;
+        //region FIND PATH .- In this step we want to find the actual path and save the data
+        foreach($this->routes as $path => $pathData){
+            if($this->isPathEqualToRouterPath($this->req_uri,$path)){
+                $this->route_path=$path;
+                
+                $this->route_req_parameters=$pathData['ext']['req_parameters'] ?? [];
+                $this->route_opt_parameters=$pathData['ext']['opt_parameters'] ?? [];
+
+                foreach ($pathData as $method => $methodData) {
+                    if($method==$this->req_method && in_array($method,$this->validMethods)){
+                        if(isset($methodData['parameters'])){
+                            $this->route_req_parameters=array_merge($this->route_req_parameters, $methodData['req_parameters']);
+                            $this->route_opt_parameters=array_merge($this->route_req_parameters, $methodData['opt_parameters']);
                         }
+                        $isFound=true;
+                        $this->route_data=$methodData;
+                        break 2;
+                    } else {
+                        
                     }
-                } 
-            }
+                }
+            } 
+        }
+        //endregion
+
+        if($isFound){
+            //region 1.-CHECKERS - First step, we validate all the parameters required
+                //We evaluate Parameters
+                $err=Check::parameters($this->route_data['req_parameters'] ?? []);
+                //We evalute headers and merge of errors
+                $err=array_merge(Check::headers($this->route_data['req_headers'] ?? [] ),$err);
+                //We evaluate body and merge errors
+                $err=array_merge(Check::body($this->route_data['req_body'] ?? []),$err);
+                //Error if not checked all
+                if(!empty($err)) $this->errorMessage($err);
             //endregion
 
-            if($isFound){
-                //region 1.-CHECKERS - First step, we validate all the parameters required
-                    //We evaluate Parameters
-                    $err=Check::parameters($this->route_data['req_parameters'] ?? []);
-                    //We evalute headers and merge of errors
-                    $err=array_merge(Check::headers($this->route_data['req_headers'] ?? [] ),$err);
-                    //We evaluate body and merge errors
-                    $err=array_merge(Check::body($this->route_data['req_body'] ?? []),$err);
-                    //Error if not checked all
-                    if(!empty($err)) $this->errorMessage($err);
-                //endregion
+            //region 1.2 - TOKEN CHECK
+                $tokenErrors=[];
+                Check::token($this->route_data['req_token']??[],$tokenErrors);
+                if(!empty($tokenErrors)){
+                    GlobalResponse::addErrorAndDie($tokenErrors,401);
+                }
+            //endregion
 
-                //region 1.2 - TOKEN CHECK
-                    $tokenErrors=[];
-                    Check::token($this->route_data['req_token']??[],$tokenErrors);
-                    if(!empty($tokenErrors)){
-                        GlobalResponse::addErrorAndDie($tokenErrors,401);
-                    }
-                //endregion
+            //region 2. -MODELS - We load the models that we need to make more checks
 
-                //region 2. -MODELS - We load the models that we need to make more checks
+            //endregion
 
-                //endregion
+            //region 3. -CONDITIONS - We check if different conditions 
 
-                //region 3. -CONDITIONS - We check if different conditions 
-
-                //endregion
-                //region 4. -RENDER - If all is OK we can render!
-                if(empty($err)) $this->render();
-                else ($this->errorMessage($err));
-                //endregion
-            } else {
-                $this->pageNotFound();
-            }
-        } catch(Error | Exception $e){
-            GlobalResponse::setCatchedSystemErrorAndShowAndDie($e);
+            //endregion
+            //region 4. -RENDER - If all is OK we can render!
+            if(empty($err)) $this->render();
+            else ($this->errorMessage($err));
+            //endregion
+        } else {
+            $this->pageNotFound();
         }
+
     }
 
     protected function render() : void {
