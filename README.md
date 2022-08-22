@@ -1,4 +1,5 @@
 # Agile Router
+[![PHP Composer](https://github.com/AGrandesR/agile-router/actions/workflows/php.yml/badge.svg?branch=master)](https://github.com/AGrandesR/agile-router/actions/workflows/php.yml)
 
 Agile router is a composer library designed to create APIs in PHP in a fast and efficient way. It is an agile and great router. The main ideas is to make the creation of apis:
 
