@@ -5,6 +5,7 @@ use AgrandesR\GlobalResponse;
 
 class Errors {
     static function setHandler(){
+        ini_set('display_errors', 'Off');
         set_error_handler(function($code, $description, $file = null, $line = null, $context = null) {
             //GlobalResponse::callSystemErrorCallback($code, $description, $file, $line, $context);
             switch($code){
@@ -28,7 +29,15 @@ class Errors {
                     break;
             }
         });
+        set_exception_handler(function($e) {
+            if($e->getMessage()=='X-AGRANDESR-DIE') {
+                return; //This will be used to stop the execution of the code without using die, to allow to use phpunit easy
+            }
+            GlobalResponse::setCatchedSystemErrorAndShowAndDie($e);
+            return true;
+        });
     }
+
 }
 /*
 switch($code){

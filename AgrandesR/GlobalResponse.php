@@ -2,6 +2,7 @@
 namespace AgrandesR;
 
 use AgrandesR\http\Response;
+use Error;
 
 class GlobalResponse {
     static function getGlobalResponse() {
@@ -44,6 +45,7 @@ class GlobalResponse {
         if($showData) $GLOBALS['X-AGRANDESR-RESPONSE']->showData();
         elseif($show) $GLOBALS['X-AGRANDESR-RESPONSE']->show();
 
+        if($die) throw new Error("X-AGRANDESR-DIE", 1995);
         if($die) die;
     
         return $functionResponse??null;
