@@ -4,6 +4,7 @@ namespace AgrandesR\http;
 
 use AgrandesR\GlobalResponse;
 use AgrandesR\tool\Utils;
+use AgrandesR\Utils\Arrays;
 use Exception;
 use Error;
 use Closure;
@@ -41,17 +42,57 @@ class Response {
 
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////S> RESPONSE OPERATIVE FUNCTIONS
-
-    //region DATA methods
-    public function addData($data, string $key='') : void {
-        if(empty($key)) $this->data[] = $data;
-        else $this->data[$key] = $data;
+    //region $type functions
+    public function getType() : string {
+        return $this->type;
     }
-    public function setData($data) : void {
+    public function setType(string $type) : bool {
+        if(in_array(strtoupper($type),$this->allowedTypes)){
+            $this->type=strtoupper($type);
+            return true;
+        }
+        $this->addWarning("Try to set a $type response, but this response type is not allowed");
+        return false;
+    }
+    public function setRenderType(string $type) : bool {
+        return $this->setType($type);
+    }
+    //endregion
+
+    //region $data functions
+    public function setData(mixed $data) : void {
         $this->data = $data;
     }
+    public function getData() : mixed {
+        return $this->data;
+    }
+    public function addData(mixed $data, string $key='') : void {
+        if(!(is_array($data)||is_string($data))) throw new Exception('addData first parameter have to be array or string'); //In future we will use array|string and not mixed - but i want compatible with 7.4
+        if(empty($this->data) && empty($key)) $this->data=$data;
+        elseif(empty($key) && is_array($this->data)) $this->data[] = $data;
+        elseif(empty($key) && is_string($this->data)) $this->data = [$this->data,$data];
+        else {
+            if(is_array($data) && is_array($this->data['key'])) $this->data[$key]=array_merge($this->data[$key],$data);
+            elseif(is_string($data) && is_string($this->data['key'])) $this->data[$key]=$this->data[$key].$data;
+            elseif(is_array($data) && is_string($this->data['key'])) $this->data[$key]=array_merge([$this->data['key']],$data);
+            elseif(is_string($data) && is_array($this->data['key'])) $this->data[$key]=array_merge($this->data['key'],[$data]);
+        }
+    }
+    //@TO-DO
+    // public function upsertData(mixed $data, string $key) : void {
+    //     $this->data[$key]=$data;
+    // }
+
+    //@TO-DO 
+    // public function addContent(string $txt) : void {
+    //     if(empty($this->data)) $this->data='';
+    //     if(!is_string($this->data)) {
+    //         $this->addWarning('Used addContent with data. Add Content is reserved to use data like string variable');
+    //         $this->addData($txt,'content');
+    //     } else {
+    //         $this->data = ($this->data??'').$txt;
+    //     }
+    // }
     //endregion
 
     //region Callback for system Errors
@@ -188,25 +229,9 @@ class Response {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     ////S> SETTERS & GETTERS
-    public function setType(string $type) : bool {
-        if(in_array(strtoupper($type),$this->allowedTypes)){
-            $this->type=strtoupper($type);
-            return true;
-        }
-        $this->addWarning("Try to set a $type response, but this response type is not allowed");
-        return false;
-    }
-    public function setRenderType(string $type) : bool {
-        if(in_array(strtoupper($type),$this->allowedTypes)){
-            $this->type=strtoupper($type);
-            return true;
-        }
-        $this->addWarning("Try to set a $type response, but this response type is not allowed");
-        return false;
-    }
-    public function getType() : string {
-        return $this->type;
-    }
+    
+    
+    
     
     public function setStatus(bool $status) : void {
         
