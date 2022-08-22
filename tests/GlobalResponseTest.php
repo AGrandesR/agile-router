@@ -35,6 +35,29 @@ final class GlobalResponseTest extends TestCase
         );
         
     }
+    /**
+     * @runInSeparateProcess
+     */
+    public function testAddDataRootValue() {
+        GlobalResponse::addData("test1");
+        $this->assertEquals(
+            "test1",
+            GlobalResponse::getData()
+        );
+    }
+
+    public function testAddData() {
+        GlobalResponse::addData("test1");
+        GlobalResponse::addData("test2");
+        $this->assertEquals(
+            ["test1","test2"],
+            GlobalResponse::getData()
+        );
+        $this->expectException(Exception::class);
+        GlobalResponse::addData(function(){});
+        $this->expectException(Exception::class);
+        GlobalResponse::addData(function(){},'test');
+    }
 /*
     public function testCannotBeCreatedFromInvalidEmailAddress(): void
     {

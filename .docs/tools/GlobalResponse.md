@@ -84,9 +84,46 @@ This can change the type of response, that is by default in JSON.
 **Warnings:**
 
 - Add warning if type doesn't is in the list of actual availables. (msg: Try to set a $type response, but this response type is not allowed)
-    
 ### setRenderType()
 - _Alias:_ **[setType](#setType())**
+### getData()
 
+Returns the data saved inside the GlobalResponse class. This data will be the one that will be shown in the response in the case of rendering using GlobalResponse instead of with native PHP methods.
+
+**Return:**
+
+- ['mixed']: The actual data value inside GlobalResponse.
+
+### setData()
+
+Replaces the internal GlobalResponse "data" values with new provided values. It is important to note that any pre-existing value will be deleted.
+**Parameters:**
+
+- $type['mixed|required']: The data we want to save into GlobalResponse.
+
+
+**Return:**
+
+- ['void']:
+
+### addData()
+
+Adds a supplied data to the internal values of "data" of GlobalResponse. Data will be stored in order. No data will ever be replaced or overwritten. If the key parameter is used, it will only be added to the content of that key within the saved data, leaving everything added.
+
+**Parameters:**
+
+- $type['string|array|required']: This is the name of the type that we can use in GlobalResponse. Actual availables: _JSON, TXT_.
+
+
+**Return:**
+
+- $ret['bool']:
+
+**Warnings:**
+
+- Add warning if type doesn't is in the list of actual availables. (msg: Try to set a $type response, but this response type is not allowed)
+### upsertData()
+
+###
 ---
 [Return to previous page](../../README.md)
