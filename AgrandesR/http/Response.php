@@ -4,7 +4,6 @@ namespace AgrandesR\http;
 
 use AgrandesR\GlobalResponse;
 use AgrandesR\tool\Utils;
-use AgrandesR\Utils\Arrays;
 use Exception;
 use Error;
 use Closure;
@@ -73,7 +72,7 @@ class Response {
         elseif(empty($key) && is_string($this->data)) $this->data = [$this->data,$data];
         else {
             if(is_array($data) && is_array($this->data['key'])) $this->data[$key]=array_merge($this->data[$key],$data);
-            elseif(is_string($data) && is_string($this->data['key'])) $this->data[$key]=$this->data[$key].$data;
+            elseif(is_string($data) && is_string($this->data['key'])) $this->data[$key]=[$this->data[$key],$data];
             elseif(is_array($data) && is_string($this->data['key'])) $this->data[$key]=array_merge([$this->data['key']],$data);
             elseif(is_string($data) && is_array($this->data['key'])) $this->data[$key]=array_merge($this->data['key'],[$data]);
         }
