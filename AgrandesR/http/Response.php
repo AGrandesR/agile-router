@@ -4,6 +4,7 @@ namespace AgrandesR\http;
 
 use AgrandesR\GlobalResponse;
 use AgrandesR\tool\Utils;
+use AgrandesR\extra\StringRouter;
 use Exception;
 use Error;
 use Closure;
@@ -173,6 +174,49 @@ class Response {
     //endregion
     
     //region RENDER FUNCTIONS
+    public function render($all=true) : void {
+        if (ob_get_level()) ob_end_clean();
+        $myfile = fopen("testfile.txt", "w");
+        ob_start(function ($buffer) use ($myfile) { fwrite($myfile,$buffer); return StringRouter::parseValues($buffer); });
+        $response = [
+            "success"=> $this->status /*?? ($this->code % 2 == 0 || $this->code==0)*/, //Code errors are odd
+            //"code"=>$this->code??1,
+            //"data"=>empty($this->data) || !isset($this->data)? null : $this->data,
+            //"meta"=>empty($this->meta) || !isset($this->meta)? null : $this->meta,
+        ];
+        if(isset($this->code)) $response['code']=$this->code;
+        if(isset($this->data) && !empty($this->data)) $response['data']=$this->data;
+        if(isset($this->meta) && !empty($this->meta)) $response['meta']=$this->meta;
+        if(isset($this->msg) && !empty($this->msg)) $response['msg']=$this->msg;
+        if(isset($this->systemError)) {
+            $response['systemError']=$this->systemError;
+            $this->callSystemErrorCallback($this->systemError);
+        }
+
+        foreach ($this->extraHeaders as $key => $value) {
+            header("$key: $value");
+        }
+        switch ($this->type){
+            case 'JSON':
+                //region SET HEADERS
+                http_response_code($this->headerCode);
+                header('Content-Type: application/json');
+                //endregion
+                
+                //region PRINT BODY
+                //endregion
+                echo json_encode($all ? $response : $this->data);
+                break;
+            case 'XML':
+                //region SET HEADERS
+                http_response_code($this->headerCode);
+                header('Content-Type: application/json');
+                echo Utils::arrayToXML($all ? $response : $this->data, $all?'<document/>':'<data/>');
+                //endregion
+                break;
+        }
+
+    }
     public function show($all=true) : void { //show(false)==showData()
         //$this->code = $this->code ?? ($this->code % 2 == 0 || $this->code==0);
 
@@ -233,7 +277,11 @@ class Response {
     
     
     public function setStatus(bool $status) : void {
-        
+        $this->status=$status;
+    }
+
+    public function getStatus() : bool {
+        return $this->status;
     }
     
     public function setDictionary(string $path, bool $external=false) : bool {

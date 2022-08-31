@@ -2,6 +2,7 @@
 
 use AgrandesR\GlobalResponse;
 use AgrandesR\http\Response;
+use PhpParser\Node\Stmt\Global_;
 use PHPUnit\Framework\TestCase;
 
 final class GlobalResponseTest extends TestCase
@@ -57,6 +58,23 @@ final class GlobalResponseTest extends TestCase
         GlobalResponse::addData(function(){});
         $this->expectException(Exception::class);
         GlobalResponse::addData(function(){},'test');
+    }
+
+    public function testSetStatus() {
+        $this->assertEquals(
+            true,
+            GlobalResponse::getStatus()
+        );
+        GlobalResponse::setStatus(false);
+        $this->assertEquals(
+            false,
+            GlobalResponse::getStatus()
+        );
+        GlobalResponse::setStatus(true);
+        $this->assertEquals(
+            true,
+            GlobalResponse::getStatus()
+        );
     }
 /*
     public function testCannotBeCreatedFromInvalidEmailAddress(): void

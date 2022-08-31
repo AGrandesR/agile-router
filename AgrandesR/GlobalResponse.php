@@ -20,19 +20,24 @@ class GlobalResponse {
         $die=false;
         $show=false;
         $showData=false;
+        $render=false;
         $replace=[];
         if(strpos($name, 'AndShowData')) {
             $name = str_replace('AndShowData','',$name);
-            if(!in_array($name,['show','showData']));
+            if(!in_array($name,['show','showData'])); 
             $showData=true;
         }
-        if(strpos($name, 'AndShow')) {
+        if(strpos($name, 'AndShow') && !$showData) {
             $name = str_replace('AndShow','',$name);
-            if(!in_array($name,['show','showData']));
+            if(!in_array($name,['show','showData','render']));
             $show=true;
         }
+        if(strpos($name, 'AndRender') && !$showData && !$show) {
+            $name = str_replace('AndRender','',$name);
+            if(!in_array($name,['show','showData','render']));
+                $render=true;
+        }
         if(strpos($name, 'AndDie')) {
-            //print_r($die);
             $name = str_replace('AndDie','',$name);
             $die=true;
         }
@@ -45,8 +50,10 @@ class GlobalResponse {
         if($showData) $GLOBALS['X-AGRANDESR-RESPONSE']->showData();
         elseif($show) $GLOBALS['X-AGRANDESR-RESPONSE']->show();
 
+        if($render) $GLOBALS['X-AGRANDESR-RESPONSE']->render();
+
         if($die) throw new Error("X-AGRANDESR-DIE", 1995);
-        if($die) die;
+        if($die) die; //Old deprecated - Reason is that makes complicate testing
     
         return $functionResponse??null;
     }
