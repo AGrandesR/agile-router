@@ -176,8 +176,7 @@ class Response {
     //region RENDER FUNCTIONS
     public function render($all=true) : void {
         if (ob_get_level()) ob_end_clean();
-        $myfile = fopen("testfile.txt", "w");
-        ob_start(function ($buffer) use ($myfile) { fwrite($myfile,$buffer); return StringRouter::parseValues($buffer); });
+        ob_start(function ($buffer) { return StringRouter::parseValues($buffer); });
         $response = [
             "success"=> $this->status /*?? ($this->code % 2 == 0 || $this->code==0)*/, //Code errors are odd
             //"code"=>$this->code??1,
