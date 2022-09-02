@@ -122,8 +122,15 @@ Adds a supplied data to the internal values of "data" of GlobalResponse. Data wi
 **Warnings:**
 
 - Add warning if type doesn't is in the list of actual availables. (msg: Try to set a $type response, but this response type is not allowed)
-### upsertData()
+### render()
 
-###
+It is the main function to return content from the server to the client. Formats, according to the indicated type (default json), the values that have been added. The data values can be sent or with all the information added.
+
+**Parameters:**
+ - all['bool|required']: Indicates as true if you want to render all the content and indicates as false if you only want to render the content of data.
+**Return:**
+ - [void] Returns no content.
+
+
 ---
 [Return to previous page](../../README.md)
