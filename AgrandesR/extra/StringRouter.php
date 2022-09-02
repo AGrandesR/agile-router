@@ -13,7 +13,7 @@ class StringRouter {
             '/\?\w{1,}\?/',
             function ($matches) {
                 $value = $_GET[trim($matches[0],'? ')] ?? null;
-                if(!isset($value)) return;
+                if(!isset($value))  return $matches[0];;
                 if(!GlobalRequest::isRequiredParameter(trim($matches[0],'? '))) GlobalResponse::addWarning("GET parameter '".trim($matches[0],'? ')."' used but not is required. We recomend to make required for this route");
                 return $value;
             },
@@ -26,7 +26,7 @@ class StringRouter {
             '/\?\w{1,}\?/',
             function ($matches) {
                 $value = $_GET[trim($matches[0],'? ')] ?? null;
-                if(!isset($value)) return;
+                if(!isset($value))  return $matches[0];;
                 return $value;
             },
             $sentence
@@ -37,7 +37,7 @@ class StringRouter {
             function ($matches) {
                 $headerName=trim($matches[0],'^ ');
                 $value = $_SERVER['HTTP_'.strtoupper($headerName)] ?? null;
-                if(!isset($value)) return;
+                if(!isset($value))  return $matches[0];;
                 if(!GlobalRequest::isRequiredHeader($headerName)) GlobalResponse::addWarning("GET header '".$headerName."' used but not is required. We recomend to make required for this route");
                 return $value;
             },
@@ -49,7 +49,7 @@ class StringRouter {
             function ($matches) {
                 $slugName=trim($matches[0],'{} ');
                 $value=GlobalRequest::getSlug($slugName);
-                if(!isset($value)) return;
+                if(!isset($value))  return $matches[0];;
                 return $value;
             },
             $sentence
@@ -62,7 +62,7 @@ class StringRouter {
             function ($matches) {
                 $bodyName=trim($matches[0],'$ ');
                 $value = GlobalRequest::getRequiredBody($bodyName) ?? null;
-                if(!isset($value)) return;
+                if(!isset($value)) return $matches[0];
                 if(!GlobalRequest::isRequiredBody($bodyName)) GlobalResponse::addWarning("GET body '".$bodyName."' used but not is required. We recomend to make required for this route");
                 return $value;
             },
@@ -77,7 +77,7 @@ class StringRouter {
                 $tokenDataName=trim($matches[0],'# ');
                 $tokenData = GlobalRequest::getTokenData($tokenDataName);
                 if(!Utils::isArrayRouteSetInArray($tokenDataName,$tokenData,$value)) return $value;
-                if(!isset($value)) return;
+                if(!isset($value))  return $matches[0];;
                 return $value;
             },
             $sentence
@@ -87,7 +87,6 @@ class StringRouter {
         //region MODEL $model.id$
 
         //endregion
-
         return $sentence;
     }
 }

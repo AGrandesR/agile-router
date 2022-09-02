@@ -34,6 +34,21 @@ class Request {
         $this->slugs=[];
     }
 
+    public function getSlug(string $slugName, bool $dieIfFails=false) : mixed {
+        if(!isset($this->slugs[$slugName])) {
+            GlobalResponse::addWarning('You try to save a variable that doesn\'t exist in ' . (debug_backtrace()[2]['file'] ?? '') . ' line ' . (debug_backtrace()[2]['194'] ?? ''));
+            if($dieIfFails) GlobalResponse::renderAndDie();
+        }
+        return $this->slugs[$slugName];
+    }
+
+    public function setSlug(string $key, string $value) : void {
+        $this->slugs[$key]=$value;
+    }
+
+
+
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     ////S> REQUEST OPERATIVE FUNCTIONS
     public function saveRequiredParamater(string $paramName) : void {
@@ -56,7 +71,7 @@ class Request {
             return null;
         }
         if(in_array($bodyName,array_keys($this->requiredBody))) return $this->requiredBody[$bodyName];
-        if($dieIfFails) GlobalResponse::addErrorAndShowAndDie("The body param $bodyName that you try to get doesn't exist.");
+        if($dieIfFails) GlobalResponse::addErrorAndRenderAndDie("The body param $bodyName that you try to get doesn't exist.");
         else GlobalResponse::addError("Check if $bodyName is in the req_body parameter to be sure that you can use");
         return null;
     }
@@ -80,13 +95,7 @@ class Request {
     public function getRequiredParameter(string $paramName) : mixed {
         return in_array($paramName,array_keys($this->requiredParameters));
     }
-    public function getSlug(string $slugName) : mixed {
-        return $this->slugs[$slugName] ?? null;
-    }
-
-    public function addSlug(string $key, string $value) : void {
-        $this->slugs[$key]=$value;
-    }
+    
     ////E> REQUEST OPERATIVE FUNCTIONS
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     

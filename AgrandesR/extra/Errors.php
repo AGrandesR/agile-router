@@ -25,7 +25,7 @@ class Errors {
                 // case E_USER_NOTICE:
                 // case E_STRICT:
                 default:
-                    GlobalResponse::setSystemErrorAndShowAndDie($code, $description, $file, $line);
+                    GlobalResponse::setSystemErrorAndRenderAndDie($code, $description, $file, $line);
                     break;
             }
         });
@@ -33,8 +33,19 @@ class Errors {
             if($e->getMessage()=='X-AGRANDESR-DIE') {
                 return; //This will be used to stop the execution of the code without using die, to allow to use phpunit easy
             }
-            GlobalResponse::setCatchedSystemErrorAndShowAndDie($e);
+            GlobalResponse::setCatchedSystemErrorAndRenderAndDie($e);
             return true;
+        });
+        register_shutdown_function(function () {
+            // check if the script ended up with an error
+            $lastError    = error_get_last(); 
+            $fatal_errors = [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR];
+            if ($lastError && in_array($lastError['type'], $fatal_errors, true)) {
+                //https://lessthan12ms.com/error-handling-in-php-and-formatting-pretty-error-responses-to-users.html
+                //var_dump($lastError);die;
+                GlobalResponse::setSystemError($lastError['type'], $lastError['message'], $lastError['file'], $lastError['line']);
+                GlobalResponse::render();
+            }
         });
     }
 

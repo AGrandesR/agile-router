@@ -227,7 +227,7 @@ class Router {
                 if(!isset($uriArray[$idx])) break;
                 if(strpos($path,'{')!==false && strpos($path,'}')!==false) {
                     $match=true;
-                    GlobalRequest::addSlug(trim($path," {}"),$uriArray[$idx]);
+                    GlobalRequest::setSlug(trim($path," {}"),$uriArray[$idx]);
                     continue;
                 }
                 if($uriArray[$idx]==$path) $match=true;
