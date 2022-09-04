@@ -1,0 +1,54 @@
+{
+    "":{
+        "GET":{
+            "render":{
+                "type":"json",
+                "content":{
+                    "Obi-wan":"Hello there!",
+                    "Grievous":"General Kenobi!"
+                }
+            }
+        }
+    },
+    "class":{
+        "GET":{
+            "render":{
+                "type":"class",
+                "content":{
+                    "path":"AgrandesR\\test",
+                    "name":"ExampleClass",
+                    "function":"hello"
+                }
+            }
+        }
+    },
+    "php":{
+        "GET":{
+            "req_model":{
+                "type":"sql|fetch|mongo|ds",
+                "fields": [],
+                "call":{
+                    "sql":""
+                },
+                "call2":{
+                    "url":"",
+                    "body":"",
+                    "headers":""
+                }
+            },
+            "render":{
+                "type":"php",
+                "content":{
+                    "path":"AgrandesR/test/plain.php"
+                }
+            }
+        }
+    },
+    "docs":{
+        "GET":{
+            "render": {
+                "type":"doc"
+            }
+        }
+    }
+}
