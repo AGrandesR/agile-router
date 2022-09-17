@@ -21,7 +21,10 @@
             "Composer\\Config::disableProcessTimeout",
             "php -S localhost:9876"
         ],
-        "tests":"./vendor/bin/phpunit --testdox tests"
+        "tests":[
+            "composer -O dump-autoload",
+            "./vendor/bin/phpunit --testdox tests"
+        ]
     },
     "require": {
         "firebase/php-jwt": "^v6.2.0"
