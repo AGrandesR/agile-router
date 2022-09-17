@@ -22,7 +22,7 @@
             "php -S localhost:9876"
         ],
         "tests":[
-            "composer -O dump-autoload",
+            "composer -o dump-autoload",
             "./vendor/bin/phpunit --testdox tests"
         ]
     },
