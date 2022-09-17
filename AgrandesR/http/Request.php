@@ -1,9 +1,9 @@
 <?php
 
-namespace AgrandesR\http;
+namespace Agrandesr\http;
 
-use AgrandesR\http\Response;
-use AgrandesR\GlobalResponse;
+use Agrandesr\http\Response;
+use Agrandesr\GlobalResponse;
 
 class Request {
     private array $requiredParameters=[];

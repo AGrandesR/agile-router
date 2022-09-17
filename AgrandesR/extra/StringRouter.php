@@ -1,10 +1,10 @@
 <?php
 
-namespace AgrandesR\extra;
+namespace Agrandesr\extra;
 
-use AgrandesR\GlobalRequest;
-use AgrandesR\GlobalResponse;
-use AgrandesR\tool\Utils;
+use Agrandesr\GlobalRequest;
+use Agrandesr\GlobalResponse;
+use Agrandesr\tool\Utils;
 
 class StringRouter {
     static function parseValues(string $sentence) : string {

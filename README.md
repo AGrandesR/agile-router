@@ -29,7 +29,7 @@ Next, you can use in your code. We encourage to use in the root file _index.php_
 
 require './vendor/autoload.php';
 
-use AgrandesR\Router;
+use Agrandesr\Router;
 
 $router = new Router();
 

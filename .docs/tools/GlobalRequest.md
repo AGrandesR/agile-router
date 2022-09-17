@@ -24,7 +24,7 @@ curl localhost:9000/parser/mewtwo
 ```
 ###### _randomFile.php_ - Hypothetical function
 ``` php
-use AgrandesR\GlobalRequest;
+use Agrandesr\GlobalRequest;
 class randomFile() {
     function  func(){
         $slug=GlobalRequest::getSlug('pokemon'); //Slug=mewtwo

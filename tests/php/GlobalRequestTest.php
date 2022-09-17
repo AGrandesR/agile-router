@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-use AgrandesR\GlobalRequest;
-use AgrandesR\GlobalResponse;
-use AgrandesR\http\Request;
+use Agrandesr\GlobalRequest;
+use Agrandesr\GlobalResponse;
+use Agrandesr\http\Request;
 use PhpParser\Node\Stmt\Global_;
 use PHPUnit\Framework\TestCase;
 

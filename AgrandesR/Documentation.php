@@ -1,5 +1,5 @@
 <?php
-namespace AgrandesR;
+namespace Agrandesr;
 
 class Documentation {
     private string $htmlBody="";

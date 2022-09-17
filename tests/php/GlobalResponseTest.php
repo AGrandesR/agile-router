@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
-use AgrandesR\GlobalResponse;
-use AgrandesR\http\Response;
+use Agrandesr\GlobalResponse;
+use Agrandesr\http\Response;
 use PhpParser\Node\Stmt\Global_;
 use PHPUnit\Framework\TestCase;
 

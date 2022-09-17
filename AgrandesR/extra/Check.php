@@ -1,10 +1,10 @@
 <?php
 
-namespace AgrandesR\extra;
+namespace Agrandesr\extra;
 
-use AgrandesR\GlobalRequest;
-use AgrandesR\tool\Token;
-use AgrandesR\tool\Utils;
+use Agrandesr\GlobalRequest;
+use Agrandesr\tool\Token;
+use Agrandesr\tool\Utils;
 
 class Check {
     static function parameters(array $requiredParameters=[]) : array {

@@ -16,7 +16,7 @@ class init() {
 ```
 ###### _tool.php_ - Hypothetical class used by several different services in our code
 ``` php
-use AgrandesR\GlobalResponse;
+use Agrandesr\GlobalResponse;
 class tool() {
     function  check($bool){
         if($bool) GlobalResponse::addData('Data');
@@ -26,7 +26,7 @@ class tool() {
 ```
 ###### _send.php_ - Hypothetical class that would perform an action of sending the content to the client
 ``` php
-use AgrandesR\GlobalResponse;
+use Agrandesr\GlobalResponse;
 class send() {
     function  result(){
         //Some code...

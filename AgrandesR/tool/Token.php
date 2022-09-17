@@ -1,10 +1,10 @@
 <?php
-namespace AgrandesR\tool;
+namespace Agrandesr\tool;
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Firebase\JWT\SignatureInvalidException;
-use AgrandesR\GlobalResponse;
+use Agrandesr\GlobalResponse;
 
 use Exception;
 use Error;

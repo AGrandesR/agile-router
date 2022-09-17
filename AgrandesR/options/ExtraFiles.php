@@ -1,10 +1,10 @@
 <?php
 
-namespace AgrandesR\options;
+namespace Agrandesr\options;
 
-use AgrandesR\Router;
-use AgrandesR\GlobalRequest;
-use AgrandesR\GlobalResponse;
+use Agrandesr\Router;
+use Agrandesr\GlobalRequest;
+use Agrandesr\GlobalResponse;
 
 class ExtraFiles {
 

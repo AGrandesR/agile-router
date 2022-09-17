@@ -1,9 +1,9 @@
 <?php
 
-namespace AgrandesR\tool;
+namespace Agrandesr\tool;
 
 use SimpleXMLElement;
-use AgrandesR\tool\MimeTypes;
+use Agrandesr\tool\MimeTypes;
 use Exception;
 
 class Utils {

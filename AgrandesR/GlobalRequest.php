@@ -1,8 +1,8 @@
 <?php
-namespace AgrandesR;
+namespace Agrandesr;
 
-use AgrandesR\http\Request;
-use AgrandesR\GlobalResponse;
+use Agrandesr\http\Request;
+use Agrandesr\GlobalResponse;
 
 class GlobalRequest {
     static function getGlobalRequest() {

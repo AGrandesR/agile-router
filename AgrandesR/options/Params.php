@@ -1,5 +1,5 @@
 <?php
-namespace AgrandesR\options;
+namespace Agrandesr\options;
 /*
 "regtoken":{
     "name":"regtoken",

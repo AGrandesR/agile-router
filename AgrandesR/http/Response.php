@@ -1,10 +1,10 @@
 <?php
 
-namespace AgrandesR\http;
+namespace Agrandesr\http;
 
-use AgrandesR\GlobalResponse;
-use AgrandesR\tool\Utils;
-use AgrandesR\extra\StringRouter;
+use Agrandesr\GlobalResponse;
+use Agrandesr\tool\Utils;
+use Agrandesr\extra\StringRouter;
 use Exception;
 use Error;
 use Closure;

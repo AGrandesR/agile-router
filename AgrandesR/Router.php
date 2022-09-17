@@ -1,22 +1,22 @@
 <?php
-namespace AgrandesR;
+namespace Agrandesr;
 
 //region HTTP libraries
-use AgrandesR\GlobalResponse;
-use AgrandesR\GlobalRequest;
+use Agrandesr\GlobalResponse;
+use Agrandesr\GlobalRequest;
 //endregion
 
 //region Extra options tools
-use AgrandesR\Documentation;
-use AgrandesR\tool\Token;
-use AgrandesR\tool\Utils;
-use AgrandesR\tool\DB as DBtool;
-use AgrandesR\extra\Errors;
-use AgrandesR\extra\Check;
-use AgrandesR\extra\StringRouter;
+use Agrandesr\Documentation;
+use Agrandesr\tool\Token;
+use Agrandesr\tool\Utils;
+use Agrandesr\tool\DB as DBtool;
+use Agrandesr\extra\Errors;
+use Agrandesr\extra\Check;
+use Agrandesr\extra\StringRouter;
 //endregion
 
-// use AgrandesR\Options\ExtraFiles;
+// use Agrandesr\Options\ExtraFiles;
 
 use Exception;
 use Error;

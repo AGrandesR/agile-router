@@ -2,7 +2,7 @@
 
 require './vendor/autoload.php';
 
-use AgrandesR\Router;
+use Agrandesr\Router;
 
 $router = new Router();
 

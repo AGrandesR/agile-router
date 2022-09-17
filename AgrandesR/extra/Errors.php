@@ -1,7 +1,7 @@
 <?php
-namespace AgrandesR\extra;
+namespace Agrandesr\extra;
 
-use AgrandesR\GlobalResponse;
+use Agrandesr\GlobalResponse;
 
 class Errors {
     static function setHandler(){

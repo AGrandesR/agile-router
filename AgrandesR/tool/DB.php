@@ -1,8 +1,8 @@
 <?php
 
-namespace AgrandesR\tool;
+namespace Agrandesr\tool;
 
-use AgrandesR\GlobalResponse;
+use Agrandesr\GlobalResponse;
 use Error;
 use Exception;
 use PDOException;

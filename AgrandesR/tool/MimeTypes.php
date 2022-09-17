@@ -1,5 +1,5 @@
 <?php
-namespace AgrandesR\tool;
+namespace Agrandesr\tool;
 
 class MimeTypes {
     public $list= [

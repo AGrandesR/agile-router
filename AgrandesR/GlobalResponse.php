@@ -1,7 +1,7 @@
 <?php
-namespace AgrandesR;
+namespace Agrandesr;
 
-use AgrandesR\http\Response;
+use Agrandesr\http\Response;
 use Error;
 
 class GlobalResponse {
