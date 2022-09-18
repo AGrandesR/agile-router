@@ -2,3 +2,4 @@ Tests/ export-ignore
 .github/ export-ignore
 src/ export-ignore
 /index.php export-ignore
+/LICENSE export-ignore
