@@ -168,12 +168,13 @@ class Router {
                 case "file":
                     $path = StringRouter::parseValues($content['path']);
                     if(!is_file($path)) GlobalResponse::addErrorAndShowAndDie('We didn\'t find any file',404);
-                    $docContent=file_get_contents($path);
+                    //$docContent=file_get_contents($path);
                     $extension = pathinfo($path, PATHINFO_EXTENSION);
 
                     $mimeType=Utils::getMimeTypeFromExtension($extension);
                     header("Content-Type: $mimeType");
-                    echo $docContent;
+                    ob_end_flush();
+                    readfile($path);
                     break;
                 case "php":
                     $path = StringRouter::parseValues($content['path']);
