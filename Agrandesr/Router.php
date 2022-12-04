@@ -131,7 +131,7 @@ class Router {
     protected function render() : void {
         if(isset($this->route_data['render'])) {
             $type = $this->route_data['render']['type'];
-            $content = isset($this->route_data['render']['content'])?$this->route_data['render']['content'] : null;
+            $content = isset($this->route_data['render']['content'])?$this->route_data['render']['content'] : [];
             switch($type){
                 case "json":
                     //header('Content-Type: application/json');
@@ -166,6 +166,7 @@ class Router {
                     GlobalResponse::showAndDie();
                     break;
                 case "file":
+                    if(!isset($content['path'])) GlobalResponse::addErrorAndShowAndDie('Any path created in content property of the route',500);
                     $path = StringRouter::parseValues($content['path']);
                     if(!is_file($path)) GlobalResponse::addErrorAndShowAndDie('We didn\'t find any file',404);
                     //$docContent=file_get_contents($path);
@@ -177,6 +178,7 @@ class Router {
                     readfile($path);
                     break;
                 case "php":
+                    if(!isset($content['path'])) GlobalResponse::addErrorAndShowAndDie('Any path created in content property of the route',500);
                     $path = StringRouter::parseValues($content['path']);
                     if(!is_file($path)) GlobalResponse::addErrorAndShowAndDie('We didn\'t find any php file',404);
                     include_once $path;
