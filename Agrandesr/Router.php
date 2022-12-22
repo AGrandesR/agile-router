@@ -129,73 +129,79 @@ class Router {
     }
 
     protected function render() : void {
-        if(isset($this->route_data['render'])) {
-            $type = $this->route_data['render']['type'];
-            $content = isset($this->route_data['render']['content'])?$this->route_data['render']['content'] : [];
-            switch($type){
-                case "json":
-                    //header('Content-Type: application/json');
-                    //if (is_array($content)) $content=json_encode($content, JSON_PRETTY_PRINT);
-                    if(is_array($content)) $content=json_encode($content);
-                    $content=StringRouter::parseValues($content);
-                    if(!Utils::jsonable($content)) GlobalResponse::addWarning("You don't add a valid json in render content. Nothing showed.");
-                    GlobalResponse::setData($content);
-                    isset($this->route_data['render']['showOnlyData']) && $this->route_data['render']['showOnlyData']===true ? GlobalResponse::showDataAndDie() : GlobalResponse::showAndDie();
-                    break;
-                case "string":
-                    echo $content;
-                    break;
-                case "class":
-                    $errors=[];
-                    if(!isset($content['path']))        $errors[]="The path is not defined in the router class render.";
-                    if(!isset($content['name']))        $errors[]="The name is not defined in the router class render.";
-                    if(!isset($content['function']))    $errors[]="The function is not defined in the router class render.";
-                    if(!empty($errors)) GlobalResponse::addErrorsAndShowAndDie($errors);
-                    $path = $content['path'] . '\\' . $content['name'];
-                    $func = $content['function'];
-                    $class= new $path();
-                    $class->$func();
-                    break;
-                case "sql":                    
-                    $DB = new DBtool($content['flag'] ?? '');
-                    $sql = StringRouter::parseValues($content['sql']);
-                    if(GlobalResponse::hasErrors()) GlobalResponse::showAndDie();
-                    $response=$DB->query($sql);
-                    if(!$response) GlobalResponse::showAndDie();
-                    GlobalResponse::setData($response);
-                    GlobalResponse::showAndDie();
-                    break;
-                case "file":
-                    if(!isset($content['path'])) GlobalResponse::addErrorAndShowAndDie('Any path created in content property of the route',500);
-                    $path = StringRouter::parseValues($content['path']);
-                    if(!is_file($path)) GlobalResponse::addErrorAndShowAndDie('We didn\'t find any file',404);
-                    //$docContent=file_get_contents($path);
-                    $extension = pathinfo($path, PATHINFO_EXTENSION);
+        try {
+            if(isset($this->route_data['render'])) {
+                $type = $this->route_data['render']['type'];
+                $content = isset($this->route_data['render']['content'])?$this->route_data['render']['content'] : [];
+                switch($type){
+                    case "json":
+                        //header('Content-Type: application/json');
+                        //if (is_array($content)) $content=json_encode($content, JSON_PRETTY_PRINT);
+                        if(is_array($content)) $content=json_encode($content);
+                        $content=StringRouter::parseValues($content);
+                        if(!Utils::jsonable($content)) GlobalResponse::addWarning("You don't add a valid json in render content. Nothing showed.");
+                        GlobalResponse::setData($content);
+                        isset($this->route_data['render']['showOnlyData']) && $this->route_data['render']['showOnlyData']===true ? GlobalResponse::showDataAndDie() : GlobalResponse::showAndDie();
+                        break;
+                    case "string":
+                        echo $content;
+                        break;
+                    case "class":
+                        $errors=[];
+                        if(!isset($content['path']))        $errors[]="The path is not defined in the router class render.";
+                        if(!isset($content['name']))        $errors[]="The name is not defined in the router class render.";
+                        if(!isset($content['function']))    $errors[]="The function is not defined in the router class render.";
+                        if(!empty($errors)) GlobalResponse::addErrorsAndShowAndDie($errors);
+                        $path = $content['path'] . '\\' . $content['name'];
+                        $func = $content['function'];
+                        $class= new $path();
+                        $class->$func();
+                        break;
+                    case "sql":                    
+                        $DB = new DBtool($content['flag'] ?? '');
+                        $sql = StringRouter::parseValues($content['sql']);
+                        if(GlobalResponse::hasErrors()) GlobalResponse::showAndDie();
+                        $response=$DB->query($sql);
+                        if(!$response) GlobalResponse::showAndDie();
+                        GlobalResponse::setData($response);
+                        GlobalResponse::showAndDie();
+                        break;
+                    case "file":
+                        if(!isset($content['path'])) GlobalResponse::addErrorAndShowAndDie('Any path created in content property of the route',500);
+                        $path = StringRouter::parseValues($content['path']);
+                        if(!is_file($path)) GlobalResponse::addErrorAndShowAndDie('We didn\'t find any file',404);
+                        //$docContent=file_get_contents($path);
+                        $extension = pathinfo($path, PATHINFO_EXTENSION);
 
-                    $mimeType=Utils::getMimeTypeFromExtension($extension);
-                    header("Content-Type: $mimeType");
-                    ob_end_flush();
-                    readfile($path);
-                    break;
-                case "php":
-                    if(!isset($content['path'])) GlobalResponse::addErrorAndShowAndDie('Any path created in content property of the route',500);
-                    $path = StringRouter::parseValues($content['path']);
-                    if(!is_file($path)) GlobalResponse::addErrorAndShowAndDie('We didn\'t find any php file',404);
-                    include_once $path;
-                    break;
-                case "doc":
-                case "docs":
-                    //We need to create a doc with all the routes and subroutes, etc and send to showDocumentation
-                    $routeMap = json_decode(file_get_contents('routes.json'),true);
-                    if(json_last_error()!==JSON_ERROR_NONE) GlobalResponse::addErrorAndShowAndDie("$routePath is not a valid json [".json_last_error_msg().']');
-                    $this->showDocumentation($routeMap);
-                    
+                        $mimeType=Utils::getMimeTypeFromExtension($extension);
+                        header("Content-Type: $mimeType");
+                        ob_end_flush();
+                        readfile($path);
+                        break;
+                    case "php":
+                        if(!isset($content['path'])) GlobalResponse::addErrorAndShowAndDie('Any path created in content property of the route',500);
+                        $path = StringRouter::parseValues($content['path']);
+                        if(!is_file($path)) GlobalResponse::addErrorAndShowAndDie('We didn\'t find any php file',404);
+                        include_once $path;
+                        break;
+                    case "doc":
+                    case "docs":
+                        //We need to create a doc with all the routes and subroutes, etc and send to showDocumentation
+                        $routeMap = json_decode(file_get_contents('routes.json'),true);
+                        if(json_last_error()!==JSON_ERROR_NONE) GlobalResponse::addErrorAndShowAndDie("$routePath is not a valid json [".json_last_error_msg().']');
+                        $this->showDocumentation($routeMap);
+                        
 
+                }
+            } else {
+                throw new Exception("Not render method for this path", 1);
             }
-        } else {
-            throw new Exception("Not render method for this path", 1);
+        } catch (Error|Exception $e) {
+            if($e->getMessage()=='X-AGRANDESR-DIE') {
+                return; //This will be used to stop the execution of the code without using die, to allow to use phpunit easy
+            }
+            GlobalResponse::setCatchedSystemErrorAndRenderAndDie($e);
         }
-        //Load * headers
         
     }
 
