@@ -1,2 +1,9 @@
+# Vendor and git
 /vendor/
 composer.lock
+
+# Local development
+index.php
+routes.json
+/routes/
+/example/

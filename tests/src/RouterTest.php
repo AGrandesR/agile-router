@@ -27,6 +27,10 @@ final class RouterTest extends TestCase
         $this->assertEquals(false, $router->isPathEqualToRouterPath('test/123/wtf','tes1t/{b}/{c}'));
         $this->assertEquals(false, $router->isPathEqualToRouterPath('123/test/wtf','1223/{b}/{c}'));
         $this->assertEquals(false, $router->isPathEqualToRouterPath('mype/tres/eds','mype/tres/ed2s'));
-        $this->assertEquals(false, $router->isPathEqualToRouterPath('12/2/3','{a}/{b}/{c}'));
+        $this->assertEquals(false, $router->isPathEqualToRouterPath('1/2/3','{a}/b/{c}'));
+    }
+
+    public function testAddRoutesFolderJsons(){
+        //@TODO
     }
 }

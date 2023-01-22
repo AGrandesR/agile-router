@@ -84,7 +84,7 @@ class Router {
      */ 
     public function isPathEqualToRouterPath(string $requestedPath, string $routerPath) : bool {
         if(empty($requestedPath) && $routerPath=='/') $routerPath=''; //I want that can be use "" and "/" to say the root of a path! : )
-        if(strpos($routerPath,'{')!=false && strpos($routerPath,'{')!=false){
+        if(strpos($routerPath,'{')!==false && strpos($routerPath,'{')!==false){
             $uriArray=explode('/',$requestedPath);
             $pathArray=explode('/',$routerPath);
             $match=false;
