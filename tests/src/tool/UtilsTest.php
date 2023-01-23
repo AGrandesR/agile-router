@@ -27,7 +27,14 @@ final class UtilsTest extends TestCase
         $this->assertEquals($xml,Utils::arrayToXML($jsonArray));
     }
 
-    public function testAddRoutesFolderJsons(){
-        //@TODO
+    public function testXmlToArray(){
+        $xml="<?xml version=\"1.0\"?>\n<ALL><lvl1><lvl2>text</lvl2><lvl2b><0>1</0><1>2</1><2>3</2></lvl2b></lvl1></ALL>\n";
+        $array = [
+            "lvl1"=>[
+                "lvl2"=>"text",
+                "lvl2b"=>[1,2,3]
+            ]
+        ];
+        $this->assertEquals(Utils::arrayToXML($array), $xml);
     }
 }
