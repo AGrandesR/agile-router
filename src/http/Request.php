@@ -10,6 +10,7 @@ use Exception;
 class Request {
     private array $requiredParameters=[];
     private array $requiredHeaders=[];
+    private array $requiredBody=[];
 
     private string $link;           //LINK: https://localhost::6000/register/?algo=2#1
     private string $address;        
@@ -62,12 +63,14 @@ class Request {
     public function saveRequiredHeader(string $headerName) : void {
         $this->requiredHeaders[$headerName]=$_SERVER['HTTP_' . strtoupper($headerName)];
     }
+    */
     public function saveRequiredBody(string $bodyName, $value) : void {
         $this->requiredBody[$bodyName]=$value;
     }
     public function isRequiredBody(string $bodyName) : bool {
         return in_array($bodyName,array_keys($this->requiredBody));
     }
+    
     public function getRequiredBody(string $bodyName, bool $dieIfFails=false) : mixed {
         if(!isset($this->requiredBody)) {
             if($dieIfFails) GlobalResponse::addErrorAndShowAndDie("Try to access a required body that doesn't exist in route config: $bodyName");
@@ -79,7 +82,7 @@ class Request {
         else GlobalResponse::addError("Check if $bodyName is in the req_body parameter to be sure that you can use");
         return null;
     }
-    
+    /*
     public function isRequiredParameter(string $paramName) : bool {
         return in_array($paramName,array_keys($this->requiredParameters));
     }
