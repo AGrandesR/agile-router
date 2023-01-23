@@ -8,7 +8,7 @@ use Exception;
 
 class Utils {
     //@CREDIT: https://stackoverflow.com/questions/26964136/how-do-i-convert-json-to-xml
-    static function arrayToXML($array, $xml = false){
+    static function arrayToXML(array $array, $xml = false) : string {
 
         if($xml === false){
             $xml = new SimpleXMLElement('<ALL/>');
