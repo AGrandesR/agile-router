@@ -19,6 +19,9 @@ final class RouterTest extends TestCase
         Fake::request();
         $router = new Router();
 
+        $this->assertEquals(true, $router->isPathEqualToRouterPath('',''));
+        $this->assertEquals(true, $router->isPathEqualToRouterPath('','/'));
+        $this->assertEquals(true, $router->isPathEqualToRouterPath('/','/'));
         $this->assertEquals(true, $router->isPathEqualToRouterPath('test/123/wtf','test/{b}/{c}'));
         $this->assertEquals(true, $router->isPathEqualToRouterPath('123/test/wtf','123/{b}/{c}'));
         $this->assertEquals(true, $router->isPathEqualToRouterPath('mype/tres/eds','mype/tres/eds'));

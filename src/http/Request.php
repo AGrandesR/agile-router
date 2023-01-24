@@ -21,6 +21,7 @@ class Request {
 
     private string $subject;        //SUBJECT: https://localhost::6000
     private string $predicate;      //PREDICATE: /register/?algo=2#1
+    private string $path;           //PATH: /register/
 
     protected array $slugs;
     protected array $tokenData;
@@ -34,7 +35,7 @@ class Request {
         $this->subject=$this->protocol . $this->host;
         $this->predicate=trim($_SERVER['REQUEST_URI'],' /');
     
-        //$this->path=strpos($this->predicate,'?')==false ? $this->predicate : preg_replace('/\?.{0,}$/','',$this->predicate);
+        $this->path=strpos($this->predicate,'?')===false ? $this->predicate : preg_replace('/\?.{0,}$/','',$this->predicate);
         $this->link=$this->subject . $this->predicate;
         $this->slugs=[];
     }
@@ -135,6 +136,9 @@ class Request {
     }
     public function getAddress() : string {
         return $this->address;
+    }
+    public function getPath() : string {
+        return $this->path;
     }
     public function isSSL() : bool {
         return $this->ssl;

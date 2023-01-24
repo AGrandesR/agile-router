@@ -3,6 +3,8 @@ namespace Agrandesr;
 
 use Agrandesr\extra\Errors;
 use Agrandesr\extra\ExtraFiles;
+use Agrandesr\extra\Check;
+use Agrandesr\extra\StringRouter;
 
 class Router {
     private array $routesMap;
@@ -46,7 +48,57 @@ class Router {
         }
         //endregion
 
+        if(!$isFound) {
+            $this->pageNotFound();
+            exit();
+        };
+
         //region EXECUTE actions of JSON in priority order
+
+        //region 1.-CHECKERS - First step, we validate all the parameters required
+        $err=Check::parameters($this->routeData['req_parameter'] ?? []);
+        $err=array_merge(Check::headers($this->routeData['req_header'] ?? [] ),$err);
+        $err=array_merge(Check::body($this->routeData['req_body'] ?? []),$err);
+        if(!empty($err)) {
+            GlobalResponse::addErrors($err);
+            GlobalResponse::renderAndDie();
+        }
+        //endregion
+
+        //region 2.-SECURITY - We call the function used to be sure if is unathorized call
+        if(isset($this->routeData['security'])) {
+            $security=$this->routeData['security'];
+            $checker=$security['checker'];
+
+            $token=StringRouter::parseValues($security['token']);
+            $data=$security['data'];
+            $errors=[];
+            if(!isset($content['path']))        $errors[]="The path is not defined in the security class render.";
+            if(!isset($content['name']))        $errors[]="The name is not defined in the router class render.";
+            if(!isset($content['function']))    $errors[]="The function is not defined in the router class render.";
+            if(!empty($errors)) {
+                GlobalResponse::addErrors($errors);
+                GlobalResponse::throwSystemError("The security json is bad formed.");
+            }
+            $path = $checker['path'] . '\\' . $checker['name'];
+            $func = $checker['function'];
+            $class= new $path();
+            $booleanValue = $class->$func();
+            if(!$booleanValue) GlobalResponse::unauthorized();
+        }
+        //endregion
+
+        //region 3. -DATA - We call all the functions to fill data elements
+
+        //endregion
+
+        //region 4. -CONDITIONS-
+
+        //endregion
+
+        //region 5. -RENDER-
+
+        //endregion
 
         //endregion
     }
@@ -64,7 +116,7 @@ class Router {
             while (false !== ($filename = readdir($dir))) {
                 if(preg_match('/\.json$/',$filename) && $filename==($pathArray[0] . '.json')) { //We ignore if don't is the actual pathArray
                     $newRoutes = json_decode(file_get_contents($dirname.'\\'.$filename),true);
-                    if(json_last_error()!==JSON_ERROR_NONE) GlobalResponse::throwSystemError(0, "$dirname/$filename is not a valid json [".json_last_error_msg().']',"$dirname/$filename",0);
+                    if(json_last_error()!==JSON_ERROR_NONE) GlobalResponse::addWarning("$dirname/$filename is not a valid json [".json_last_error_msg().']',"$dirname/$filename",0);
                     foreach($newRoutes as $key=>$value) {
                         $newkey = stripslashes($pathArray[0] . ($key ? ("/". $key):'')); //We add to the paths of the json file the name of the file that means the first slug of the path
                         $this->routesMap[$newkey ?? $key] = $value;
@@ -103,5 +155,8 @@ class Router {
             }
             return $match;
         } else return $routerPath==$requestedPath;
+    }
+    protected function pageNotFound() : void {
+        http_response_code(404);
     }
 }

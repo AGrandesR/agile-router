@@ -2,6 +2,7 @@
 namespace Agrandesr;
 
 use Agrandesr\http\Response;
+use Agrandesr\extra\Errors;
 use Error;
 
 class GlobalResponse {
@@ -18,13 +19,17 @@ class GlobalResponse {
         if(!isset($GLOBALS['X-AGRANDESR-RESPONSE'])) self::getGlobalResponse();
 
         $die=false;
+        if(strpos($name, 'AndDie')) {
+            $name = str_replace('AndDie','',$name);
+            $die=true;
+        }
 
         if(method_exists($GLOBALS['X-AGRANDESR-RESPONSE'], $name))
             $functionResponse=call_user_func_array([$GLOBALS['X-AGRANDESR-RESPONSE'],$name], $arguments);
         /*else
             $GLOBALS['X-AGRANDESR-RESPONSE']->addWarning("The function '$name' doesn't exist in Response method : ( ");*/
 
-        if($die) throw new Error("X-AGRANDESR-DIE", 1995);
+        if($die) Errors::stop();
     
         return $functionResponse??null;
     }
