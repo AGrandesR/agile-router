@@ -56,15 +56,15 @@ class Request {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     ////S> REQUEST OPERATIVE FUNCTIONS
-    /*
-    public function saveRequiredParamater(string $paramName) : void {
+    
+    public function saveRequiredParameter(string $paramName) : void {
         if(!isset($_GET[$paramName])) GlobalResponse::addWarning('You try to save a variable that doesn\'t exist in ' . debug_backtrace()[2]['file'] . ' line ' . debug_backtrace()[2]['194']);
         $this->requiredParameters[$paramName]=$_GET[$paramName];
     }
     public function saveRequiredHeader(string $headerName) : void {
         $this->requiredHeaders[$headerName]=$_SERVER['HTTP_' . strtoupper($headerName)];
     }
-    */
+    
     public function saveRequiredBody(string $bodyName, $value) : void {
         $this->requiredBody[$bodyName]=$value;
     }

@@ -18,7 +18,7 @@ class Check {
             if(!isset($_GET[$parameterData['name']]))  $requiredErrors[]= 'Forgot required parameter ' . $parameterData['name'];
             if(isset($parameterData['regex']) && !empty($parameterData['regex']) && preg_match($parameterData['regex'],$_GET[$parameterData['name']])) $requiredErrors[$parameterData['name']]='Value not valid with the regex';
             //In the router PRO we put into Request method the value with the correct type ;)
-            if(empty($requiredErrors)) GlobalRequest::saveRequiredParamater($parameterData['name']);
+            if(empty($requiredErrors)) GlobalRequest::saveRequiredParameter($parameterData['name']);
         }
         return $requiredErrors;
     }
@@ -30,7 +30,9 @@ class Check {
         foreach($requiredHeaders as $headerData){
             if(is_string($headerData)) $headerData=['name'=>$headerData];
             if(!isset($headerData['name'])) $requiredErrors[]='Need to declare "name" of the header to can check: ' . json_encode($headerData);
+            $headerData['name']=str_replace('-','_',$headerData['name']);
             if(!isset($_SERVER['HTTP_' . strtoupper($headerData['name'])])) $requiredErrors[]='Forgot required header: '.$headerData['name'];
+            //$headerData['name']=str_replace(' ','_',$headerData['name']);
             if(isset($headerData['regex']) && !empty($headerData['regex']) &&  preg_match($headerData['regex'], $_SERVER['HTTP_' . strtoupper($headerData['name'])])) $requiredErrors[]='Value '.$headerData['name']. ' not valid with the regex';
             //In the router PRO we put into Request method the value with the correct type ;)
             if(empty($requiredErrors)) GlobalRequest::saveRequiredHeader($headerData['name']);
