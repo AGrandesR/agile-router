@@ -6,6 +6,8 @@ use Agrandesr\extra\ExtraFiles;
 use Agrandesr\extra\Check;
 use Agrandesr\extra\StringRouter;
 
+use Exception;
+
 class Router {
     private array $routesMap;
 
@@ -78,7 +80,7 @@ class Router {
             if(!isset($content['function']))    $errors[]="The function is not defined in the router class render.";
             if(!empty($errors)) {
                 GlobalResponse::addErrors($errors);
-                GlobalResponse::throwSystemError("The security json is bad formed.");
+                throw new Exception("The security json action is bad formed.", 1);
             }
             $path = $checker['path'] . '\\' . $checker['name'];
             $func = $checker['function'];

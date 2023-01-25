@@ -4,6 +4,8 @@ namespace Agrandesr;
 use Agrandesr\http\Request;
 use Agrandesr\GlobalResponse;
 
+use Exception;
+
 class GlobalRequest {
     static function getGlobalRequest() {
         //Check if global response is created, if not, then is created
@@ -22,7 +24,7 @@ class GlobalRequest {
         if(method_exists($GLOBALS['X-AGRANDESR-REQUEST'], $name))
             $functionResponse=call_user_func_array([$GLOBALS['X-AGRANDESR-REQUEST'],$name], $arguments);
         else
-            GlobalResponse::throwSystemError(0,"The function '$name' doesn't exist in Request method : ( ",__FILE__,__LINE__);
+            throw new Exception("The function '$name' doesn't exist in Request method : ( ", 1);
         
         return $functionResponse ?? null;
     }

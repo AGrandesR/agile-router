@@ -33,6 +33,8 @@ class Response {
         if(isset($this->code)) $response['code']=$this->code;
         if(isset($this->data) && !empty($this->data)) $response['data']=$this->data;
         if(isset($this->meta) && !empty($this->meta)) $response['meta']=$this->meta;
+        if(isset($this->systemError) && !empty($this->systemError)) $response['systemError']=$this->systemError;
+        if(isset($this->systemWarnings) && !empty($this->systemWarnings)) $response['systemWarnings']=$this->systemWarnings;
 
         //region SET HEADERS
         http_response_code($this->httpCode);
@@ -48,6 +50,7 @@ class Response {
     public function unauthorized() : void {
         $this->httpCode=401;
         $this->status=false;
+        $this->render();
         Errors::stop();
     }
 
@@ -73,6 +76,11 @@ class Response {
 
     //region Errors functions
     public function throwSystemError(int $code, string $description, string $file, int $line, int $httpCode=500) : void {
+        $this->addSystemError($code, $description, $file, $line, $httpCode=500);
+        Errors::stop(); //Erros::stop will provocate the end of the program and the last render
+    }
+
+    public function addSystemError(int $code, string $description, string $file, int $line, int $httpCode=500) : void {
         $this->httpCode=$httpCode;
         $this->status=false;
         $this->systemError=[
@@ -81,7 +89,6 @@ class Response {
             "file"=>$file,
             "line"=>$line
         ];
-        GlobalResponse::renderAndDie();
     }
 
     public function addSystemWarning(int $code, string $description, string $file, int $line){

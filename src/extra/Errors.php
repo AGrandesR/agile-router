@@ -35,12 +35,9 @@ class Errors {
         });
 
         set_exception_handler(function($e) {
-            if($e->getMessage()=='X-AGRANDESR-DIE') {
-                //This is the end of the program
-                GlobalResponse::render();
-                return;
-            }
-            GlobalResponse::throwSystemError($e->getCode(),$e->getMessage(),$e->getFile(),$e->getLine());
+            if($e->getMessage()!=='X-AGRANDESR-DIE') 
+                GlobalResponse::addSystemError($e->getCode(),$e->getMessage(),$e->getFile(),$e->getLine());
+            GlobalResponse::render();
             //This is the end of the program
         });
 
@@ -51,7 +48,7 @@ class Errors {
             if ($lastError && in_array($lastError['type'], $fatal_errors, true)) {
                 //https://lessthan12ms.com/error-handling-in-php-and-formatting-pretty-error-responses-to-users.html
                 //var_dump($lastError);die;
-                GlobalResponse::throwSystemError($lastError['type'], $lastError['message'], $lastError['file'], $lastError['line']);
+                GlobalResponse::throwSystemError(intval($lastError['type']), $lastError['message'], $lastError['file'], $lastError['line']);
             }
         });
     }
