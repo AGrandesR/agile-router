@@ -1,0 +1,36 @@
+{
+    "":{
+        "POST":{
+            "req_header":["x-token"],
+            "req_parameter":["id"],
+            "security":{
+                "type":"class",
+                "content": {
+                    "path":"Agrandesr\\examples",
+                    "name":"SecurityClass",
+                    "function":"checkToken",
+                    "parameters": [
+                        "^x-token^",
+                        ["admin","basic"]
+                    ]
+                }
+            },
+            "execute":[
+                {
+                    "condition":"",
+                    "type":"php",
+                    "content": {
+                        "path":"index.php"
+                    }
+                }
+            ]
+        },
+        "GET": {
+            "execute":[
+                {
+                    "type":"die"
+                }
+            ]
+        }
+    }
+}

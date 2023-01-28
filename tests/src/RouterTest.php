@@ -17,7 +17,8 @@ final class RouterTest extends TestCase
 
     public function testIsPathEqualToRouterPath() {
         Fake::request();
-        $router = new Router();
+
+        $router = new Router('tests/src/routesTest.json');
 
         $this->assertEquals(true, $router->isPathEqualToRouterPath('',''));
         $this->assertEquals(true, $router->isPathEqualToRouterPath('','/'));

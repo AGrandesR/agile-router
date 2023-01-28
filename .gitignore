@@ -4,9 +4,8 @@ composer.lock
 
 # Local development
 index.php
-routes.json
 routes/
 examples/
 .env
-/routes.json
+routes.json
 /routes/
