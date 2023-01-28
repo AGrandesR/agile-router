@@ -28,5 +28,8 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5"
+    },
+    "require": {
+        "agrandesr/arrays": "^1.1"
     }
 }

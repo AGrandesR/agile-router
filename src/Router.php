@@ -2,7 +2,6 @@
 namespace Agrandesr;
 
 use Agrandesr\extra\Errors;
-use Agrandesr\extra\ExtraFiles;
 use Agrandesr\extra\Check;
 use Agrandesr\extra\StringRouter;
 
@@ -12,6 +11,12 @@ class Router {
     private array $routesMap;
 
     private array $routeData;
+
+    private array $routerActions=[
+        'php'=>'Agrandesr\\actions\\PhpAction',
+        'class'=>'Agrandesr\\actions\\ClassAction',
+        'json'=>'Agrandesr\\actions\\JsonAction',
+    ];
 
     function __construct(string $routePath = 'routes.json', string $folderPath='routes') {
         //All the error will be handled by Agile-router now
@@ -69,38 +74,34 @@ class Router {
 
         //region 2.-SECURITY - We call the function used to be sure if is unathorized call
         if(isset($this->routeData['security'])) {
-            $security=$this->routeData['security'];
-            $checker=$security['checker'];
+            $secType=$this->routeData['security']['type'];
+            $secContent=$this->routeData['security']['content'] ?? [];
 
-            $token=StringRouter::parseValues($security['token']);
-            $data=$security['data'];
-            $errors=[];
-            if(!isset($content['path']))        $errors[]="The path is not defined in the security class render.";
-            if(!isset($content['name']))        $errors[]="The name is not defined in the router class render.";
-            if(!isset($content['function']))    $errors[]="The function is not defined in the router class render.";
-            if(!empty($errors)) {
-                GlobalResponse::addErrors($errors);
-                throw new Exception("The security json action is bad formed.", 1);
-            }
-            $path = $checker['path'] . '\\' . $checker['name'];
-            $func = $checker['function'];
-            $class= new $path();
-            $booleanValue = $class->$func();
+            if(isset($this->customActions[$secType])) $class= new $this->customActions[$secType]($secType, $secContent);
+            elseif ($this->routerActions[$secType]) $class= new $this->routerActions[$secType]($secType, $secContent);
+            else throw new Exception("The Action Type $secType is not defined.", 1);
+
+            $booleanValue = $class->execute();
             if(!$booleanValue) GlobalResponse::unauthorized();
         }
         //endregion
 
-        //region 3. -DATA - We call all the functions to fill data elements
+        //region 3. -EXECUTIONS - We execute each script in order
+        if(isset($this->routeData['execute']) && is_array($this->routeData['execute']) && !empty($this->routeData['execute'])) {
+            foreach($this->routeData['execute'] as $executeData) {
+                $exeType=$executeData['type'];
+                $exeContent=$executeData['content'] ?? [];
+                if(isset($this->customActions[$exeType])) $class= new $this->customActions[$exeType]($exeType, $exeContent);
+                elseif ($this->routerActions[$exeType]) $class= new $this->routerActions[$exeType]($exeType, $exeContent);
+                else throw new Exception("The Action Type $exeType is not defined.", 1);
 
+                $class->execute();
+            }
+        } else throw new Exception("Any action defined in the execute array in routes path", 1);
+        
         //endregion
 
-        //region 4. -CONDITIONS-
-
-        //endregion
-
-        //region 5. -RENDER-
-
-        //endregion
+        GlobalResponse::render();
 
         //endregion
     }
@@ -161,4 +162,11 @@ class Router {
     protected function pageNotFound() : void {
         http_response_code(404);
     }
+
+    //region Custom actions
+    private array $customActions=[];
+    public function addCustomAction($typeName, $classPath) {
+        $this->customActions[$typeName]=$classPath;
+    }
+    //endregion
 }
