@@ -4,6 +4,7 @@ namespace Agrandesr;
 use Agrandesr\http\Response;
 use Agrandesr\extra\Errors;
 use Error;
+use Exception;
 
 class GlobalResponse {
     static function getGlobalResponse() {
@@ -26,8 +27,8 @@ class GlobalResponse {
 
         if(method_exists($GLOBALS['X-AGRANDESR-RESPONSE'], $name))
             $functionResponse=call_user_func_array([$GLOBALS['X-AGRANDESR-RESPONSE'],$name], $arguments);
-        /*else
-            $GLOBALS['X-AGRANDESR-RESPONSE']->addWarning("The function '$name' doesn't exist in Response method : ( ");*/
+        else
+            throw new Exception("The function '$name' doesn't exist in Response method");
 
         if($die) Errors::stop();
     

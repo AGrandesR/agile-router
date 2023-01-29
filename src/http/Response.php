@@ -13,6 +13,8 @@ class Response {
     private array $systemError; //Only one error. When we throw a System Error we stop the code execution
     private array $systemWarnings=[];
 
+    private bool $showAll=true;
+
     //region RESPONSE return
     private bool $status=true;
     private int $httpCode=200;
@@ -24,7 +26,7 @@ class Response {
     //endregion
 
     //region RENDER functions
-    public function render($all=true) : void {
+    public function render() : void {
         if (ob_get_level()) ob_end_clean();
         ob_start(function ($buffer) { return StringRouter::parseValues($buffer); });
         $response = [
@@ -44,7 +46,7 @@ class Response {
         header('Content-Type: application/json');
         //endregion
 
-        echo json_encode($all ? $response : $this->data);
+        echo json_encode($this->showAll ? $response : $this->data);
     }
 
     public function unauthorized() : void {
@@ -71,6 +73,10 @@ class Response {
     }
     public function getData() : mixed {
         return $this->data;
+    }
+
+    public function setData(mixed $data) : void {
+        $this->data = $data;
     }
     //endregion
 
@@ -123,4 +129,12 @@ class Response {
         return $this->meta['errors'] ?? [];
     }
     //endregion
+
+    public function showAll() {
+        $this->showAll=true;
+    }
+
+    public function showData() {
+        $this->showAll=false;
+    }
 }
