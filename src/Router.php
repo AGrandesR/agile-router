@@ -105,7 +105,7 @@ class Router {
 
                 $class->execute();
 
-                if($executeData['condition']??false) break;
+                if($executeData['stop']??false) break;
             }
         } else throw new Exception("Any action defined in the execute array in routes path", 1);
         
