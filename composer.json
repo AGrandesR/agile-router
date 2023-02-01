@@ -30,6 +30,7 @@
         "phpunit/phpunit": "^9.5"
     },
     "require": {
-        "agrandesr/arrays": "^1.1"
+        "agrandesr/arrays": "^1.1",
+        "agrandesr/array-conditions": "^1.0"
     }
 }

@@ -4,6 +4,7 @@ namespace Agrandesr;
 use Agrandesr\extra\Errors;
 use Agrandesr\extra\Check;
 use Agrandesr\extra\StringRouter;
+use Agrandesr\ConditionArray;
 
 use Exception;
 
@@ -89,6 +90,13 @@ class Router {
         //region 3. -EXECUTIONS - We execute each script in order
         if(isset($this->routeData['execute']) && is_array($this->routeData['execute']) && !empty($this->routeData['execute'])) {
             foreach($this->routeData['execute'] as $executeData) {
+                if(
+                    isset($executeData['condition']) &&
+                    is_array($executeData['condition']) &&
+                    !ConditionArray::check(StringRouter::dataParseValues($executeData['condition']))
+                )
+                    continue;
+
                 $exeType=$executeData['type'];
                 $exeContent=$executeData['content'] ?? [];
                 if(isset($this->customActions[$exeType])) $class= new $this->customActions[$exeType]($exeType, $exeContent);
@@ -96,6 +104,8 @@ class Router {
                 else throw new Exception("The Action Type $exeType is not defined.", 1);
 
                 $class->execute();
+
+                if($executeData['condition']??false) break;
             }
         } else throw new Exception("Any action defined in the execute array in routes path", 1);
         
