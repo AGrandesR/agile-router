@@ -1,0 +1,36 @@
+{
+    "name": "agrandesr/agile-router",
+    "description": "Agile router is a composer library designed to create APIs in PHP in a fast and efficient way. It is an agile and great router.",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Agrandesr\\": "src/",
+            "Agrandesr\\Tests\\":"tests"
+        }
+    },
+    "authors": [
+        {
+            "name": "A.Grandes.R",
+            "email": "agrandesr@gmail.com"
+        }
+    ],
+    "scripts": {
+        "router":"cp -r vendor/agrandesr/agile-router/example/routes.json ./ && cp -r vendor/agrandesr/agile-router/example/index.php ./",
+        "serve":[
+            "Composer\\Config::disableProcessTimeout",
+            "php -S localhost:9876"
+        ],
+        "tests":[
+            "composer -o dump-autoload",
+            "./vendor/bin/phpunit --testdox tests"
+        ]
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    },
+    "require": {
+        "agrandesr/arrays": "^1.1",
+        "agrandesr/array-conditions": "^1.0"
+    }
+}

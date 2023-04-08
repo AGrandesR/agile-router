@@ -1,0 +1,85 @@
+{
+    "":{
+        "POST":{
+            "req_header":["x-token"],
+            "req_parameter":["id"],
+            "security":{
+                "type":"class",
+                "content": {
+                    "path":"Agrandesr\\examples",
+                    "name":"SecurityClass",
+                    "function":"checkToken",
+                    "parameters": [
+                        "^x-token^",
+                        ["admin","basic"]
+                    ]
+                }
+            },
+            "execute":[
+                {
+                    "condition":"",
+                    "type":"php",
+                    "content": {
+                        "path":"index.php"
+                    }
+                }
+            ]
+        },
+        "GET": {
+            "execute":[
+                {
+                    "type":"json",
+                    "content":{
+                        "body":{
+                            "test":"test"
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "conditions": {
+        "GET":{
+            "req_parameter":["val1"],
+            "execute":[
+                {
+                    "type":"json",
+                    "content":{
+                        "body":{
+                            "result":"?val1? > ?val2?"
+                        }
+                    }
+                },
+                {
+                    "condition":["?val1?","IN",["queso","mantequilla", "azucar"]],
+                    "type":"json",
+                    "content":{
+                        "body":{
+                            "result":"Este elemento está permitido"
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "file":{
+        "GET":{
+            "execute":[
+                {
+                    "type":"file",
+                    "content":{
+                        "path":"D:\\GxCode\\php\\agile-router-full-template\\src\\Mail\\poppy.png"
+                    }
+                },
+                {
+                    "type":"json",
+                    "content":{
+                        "body":{
+                            "result":"Este elemento está permitido"
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}
