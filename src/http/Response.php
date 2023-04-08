@@ -86,7 +86,7 @@ class Response {
         Errors::stop(); //Erros::stop will provocate the end of the program and the last render
     }
 
-    public function addSystemError(int $code, string $description, string $file, int $line, int $httpCode=500) : void {
+    public function addSystemError(mixed $code, string $description, string $file, int $line, int $httpCode=500) : void {
         $this->httpCode=$httpCode;
         $this->status=false;
         $this->systemError=[

@@ -1,0 +1,11 @@
+# Vendor and git
+/vendor/
+composer.lock
+
+# Local development
+index.php
+routes/
+examples/
+.env
+routes.json
+/routes/

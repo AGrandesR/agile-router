@@ -11,8 +11,11 @@ class ClassAction extends ActionBuilder {
 
         $path = $this->path . '\\' .$this->name;
         $func = $this->function;
-            $class= new $path();
+        $class= new $path();
+
         if(isset($this->parameters))
-        $booleanValue = $class->$func(...);
+            return $class->$func(...($this->parameters));
+        else
+            return $class->$func();
     }
 }

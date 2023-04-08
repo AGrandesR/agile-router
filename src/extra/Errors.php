@@ -19,7 +19,6 @@ class Errors {
                 case E_USER_WARNING:
                 case E_COMPILE_WARNING: 
                 case E_RECOVERABLE_ERROR:
-                    
                     GlobalResponse::addSystemWarning($code, $description, $file, $line);
                     return true;
                 // case E_ERROR:
