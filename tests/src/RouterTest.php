@@ -17,7 +17,7 @@ final class RouterTest extends TestCase
 
     public function testIsPathEqualToRouterPath() {
         Fake::request();
-
+        $GLOBALS['X-AGRANDESR-TESTS']=true;
         $router = new Router('tests/src/routesTest.json');
 
         $this->assertEquals(true, $router->isPathEqualToRouterPath('',''));

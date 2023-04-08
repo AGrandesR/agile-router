@@ -22,7 +22,7 @@ class Router {
 
     function __construct(string $routePath = 'routes.json', string $folderPath='routes') {
         //All the error will be handled by Agile-router now
-        Errors::setHandler();
+        if(!isset($GLOBALS['X-AGRANDESR-TESTS']))Errors::setHandler();
         //Now you will be avaible to use GlobalRequest in all the code
         GlobalRequest::init();
 
