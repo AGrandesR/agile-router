@@ -7,11 +7,12 @@ use Agrandesr\GlobalRequest;
 use Agrandesr\GlobalResponse;
 use Agrandesr\tool\Utils;
 use PhpParser\Node\Stmt\Global_;
+use Agrandesr\Utils\Arrays;
 
 use function PHPUnit\Framework\returnSelf;
 
 class StringRouter {
-    static function parseValues(string $sentence) : string {
+    static function parseValues(string $sentence) : mixed {
         //TODO: Avoid that can parse a parsed value example if "?value?" contains "Something^ extrange^" we will have a problem
 
         //region PARAMETERS ?value?
@@ -83,31 +84,31 @@ class StringRouter {
         );
         //endregion
 
+        $replacement=null;
         //region GlobalData ||KEY.etc.etc||
         $sentence = preg_replace_callback(
             '/\|\|(\w|\.){1,}\|\|/',
-            function ($matches) use ($sentence) {
+            function ($matches) use ($sentence,&$replacement) {
                 $globalDataName=trim($matches[0],'| ');
                 $globalData=explode('.',$globalDataName);
                 $mixedContent = GlobalData::get($globalData[0]);
-                unset($mixedContent[0]);
-                $globalDataName=implode('.',$mixedContent);
+                unset($globalData[0]);
+                // echo json_encode($mixedContent);die;
+                $globalDataName=implode('.',$globalData);
 
                 if(!isset($mixedContent))  return $matches[0];
                 if(isset($globalData[1]) && !Utils::isArrayRouteSetInArray($globalDataName,$mixedContent,$value)) $return=$value;
-                $return = $mixedContent;
+                else $return=Arrays::pathGet($globalDataName, $mixedContent);
                 if($sentence == $matches[0]) { //If is exactly the same we stop the function and replace $sentence by the new $solution
-                    $sentence=$return;
+                    $replacement=$return;
                     return null;
                 }
-                if(!isset($mixedContent))  return $matches[0];
-                if(isset($globalData[1]) && !Utils::isArrayRouteSetInArray($globalDataName,$mixedContent,$value)) return $value;
                 return $mixedContent;
             },
             $sentence
         );
         //endregion
-        return $sentence;
+        return isset($replacement)?$replacement:$sentence;
     }
 
     static function dataParseValues(mixed $dataToParse) : mixed{
