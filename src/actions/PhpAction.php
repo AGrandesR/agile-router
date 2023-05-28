@@ -9,6 +9,6 @@ class PhpAction extends ActionBuilder {
     public function execute() {
         $this->checkRequiredKeys(['path']);
 
-        return require($path);
+        return require($this->path);
     }
 }
